@@ -25,16 +25,8 @@
   <a href="https://github.com/AJTDaedalus/pipeline_ui">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
-
 <h3 align="center">Pipeline UI</h3>
-
-  <p align="Left">
-This project is in support of their growing bioinformatics infrastructure that still relies on command line interaction and a small team of bioinformaticists to manage pipelines and tools.  The goal of this project is to provide a graphical user interface (GUI) to increase accessibility to these pipelines and tools as the bioinformatics portfolio grows.
-    <br />  
-  </p>
 </div>
-
-
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -49,23 +41,20 @@ This project is in support of their growing bioinformatics infrastructure that s
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#prerequisites">Requirements</a></li>
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
-
-
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+This project is in support of their growing bioinformatics infrastructure that still relies on command line interaction and a small team of bioinformaticists to manage pipelines and tools.  The goal of this project is to provide a graphical user interface (GUI) to increase accessibility to these pipelines and tools as the bioinformatics portfolio grows.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
