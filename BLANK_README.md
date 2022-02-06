@@ -33,10 +33,10 @@
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-<h3 align="center">project_title</h3>
+<h3 align="center">Pipeline UI</h3>
 
-  <p align="center">
-    project_description
+  <p align="Left">
+    This project is in support of their growing bioinformatics infrastructure that still relies on command line interaction and a small team of bioinformaticists to manage pipelines and tools.  The goal of this project is to provide a graphical user interface (GUI) to increase accessibility to these pipelines and tools as the bioinformatics portfolio grows.
     <br />
     <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
     <br />
