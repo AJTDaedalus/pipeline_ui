@@ -73,7 +73,7 @@ TBD - when instructions are available
 
 ### Requirements
 ```
-pip install -r requirements.txt
+pip install -r Requirements.txt
 ```
 
 ### Installation
