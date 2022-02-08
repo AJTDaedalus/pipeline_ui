@@ -72,7 +72,9 @@ This project is in support of their growing bioinformatics infrastructure that s
 TBD - when instructions are available
 
 ### Requirements
-* User account
+```
+pip install -r requirements.txt
+```
 
 ### Installation
 TBD - installation instructions to be added later
