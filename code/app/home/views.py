@@ -7,14 +7,14 @@ from app.home import home
 def index():
     return render_template('home.html')
 @home.route('/login')
-def index():
+def login():
     return render_template('home.html')
 
 @home.route('/home')
-def index():
+def home():
     return render_template('home.html')
 
 @home.route('/admin')
-def index():
+def admin():
     return render_template('home.html')
 
