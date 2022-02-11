@@ -18,3 +18,7 @@ def mypage1():
 @home.route("/testpage")
 def testpage():
     return render_template("testpage.html")
+@home.route("/registration")
+def registration():
+    return render_template("registration.html")
+

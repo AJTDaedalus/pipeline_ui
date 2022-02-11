@@ -13,8 +13,16 @@ body {
 p {
   font-family: Monoco, monospace;
   font-size: 1.2em;
-  color: rgb(19, 40, 65);
+  color: rgb(109, 152, 204);
   }
+
+  .boxed {
+    border: 10px solid rgb(116, 131, 211) ;
+    border-radius: 25px;
+    
+  }
+
+
 
 h1 {
   font-family: Monoco, Monoco, monospace;
