@@ -112,6 +112,7 @@ Project Link: [https://github.com/AJTDaedalus/pipeline_ui](https://github.com/AJ
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/AJTDaedalus/pipeline_ui.svg?style=for-the-badge
+
 [contributors-url]: https://github.com/AJTDaedalus/pipeline_ui/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/AJTDaedalus/pipeline_ui.svg?style=for-the-badge
 [forks-url]: https://github.com/AJTDaedalus/pipeline_ui/network/members
