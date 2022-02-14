@@ -1,6 +1,0 @@
-#
-#This is the list of requirements
-#To update, run:
-#
-#	pip-compile
-#
