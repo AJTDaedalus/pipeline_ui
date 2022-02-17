@@ -4,8 +4,10 @@ App initialization file
 '''
 
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 from settings import DevelopmentSettings
-from .db import db
+from app.models import db
+
 
 def create_app(settings=DevelopmentSettings):
     app = Flask(__name__)
