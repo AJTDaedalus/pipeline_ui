@@ -8,10 +8,16 @@ from app.auth import auth
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
-        user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        flash('Congratulations, you are now a registered user!')
-        return redirect(url_for(index))
+        if User.query.filter_by(username=form.username.data.lower()).first():
+            flash('User already exists.', category='error')
+            return redirect(url_for('home.index'))
+        else:
+            user = User(username=form.username.data.lower(),
+                        email=form.email.data)
+            user.set_password(form.password.data)
+            db.session.add(user)
+            db.session.commit()
+            flash('Congratulations, you are now a registered user!',
+                  category='success')
+            return redirect(url_for('home.index'))
     return render_template('registration.html', title='Register', form=form)
