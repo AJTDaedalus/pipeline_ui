@@ -13,7 +13,7 @@ basedir = os.path.abspath(os.path.dirname(__name__))
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY')
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 #Create development settings
 class DevelopmentSettings(Config):
