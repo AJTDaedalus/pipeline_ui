@@ -7,14 +7,18 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from settings import DevelopmentSettings
 from app.models import db
+from app.models import login_manager
 
+
+    
 
 def create_app(settings=DevelopmentSettings):
     app = Flask(__name__)
     app.config.from_object(settings)
 
     db.init_app(app)
-
+    login_manager.init_app(app)
+    
     from app.home import home as home_bp
     from app.auth import auth as auth_bp
     app.register_blueprint(home_bp)
