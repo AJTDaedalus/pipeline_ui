@@ -1,4 +1,27 @@
+
 {% extends 'base.html' %}
 {% block content %}
-    <h2>Hello,login here!</h2>
+
+<!DOCTYPE html>
+<html></html>
+{% extends "base.html" %}
+{% block title %}Login Page{% endblock %}
+{% block page_content %}
+<p style="text-align:center">Log in using your username and password</p>
+<head>
+    <title>Login Page</title>
+</head>
+<body>
+    <form action="/login" method="POST" style="text-align:center">
+        <p>Enter Username:</p>
+        <p><input type="text" name="username" /></p>
+        <p>Enter Password:</p>
+        <p><input type="password" name="password" /></p>
+
+        <p><input type="submit" value="submit" /></p>
+ 
+    </form>
+</body>
+</html>
+
 {% endblock %}
