@@ -1,4 +1,5 @@
 from flask import render_template
+from app.auth.forms import LoginForm
 
 #Import blueprint
 from app.home import home
@@ -20,7 +21,8 @@ def admin():
 
 @home.route("/login")
 def login():
-    return render_template("login.html")
+    form = LoginForm()
+    return render_template('login.html', form=form)
 @home.route("/admin")
 def admin():
     return render_template("admin.html")
