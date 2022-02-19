@@ -4,6 +4,11 @@
 <div class="boxed">
 <p style="text-align:center"> Welcome to Bioinformatics Pipeline UI</p>
 <p style="text-align:center">Login or Register to submit jobs</p>
+{% if current_user.is_authenticated %}
+    <h1> Hi, {{ current_user.username }} </h1>
+{% else %}
+    <h1> No current user is logged in </h1>
+{% endif %}
 </div>
 
 
