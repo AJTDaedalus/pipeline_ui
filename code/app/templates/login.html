@@ -9,14 +9,24 @@
     <title>Login Page</title>
 </head>
 <body>
-    <form action="/login" method="POST" style="text-align:center">
-        <p>Enter Username:</p>
-        <p><input type="text" name="username" /></p>
-        <p>Enter Password:</p>
-        <p><input type="password" name="password" /></p>
-
-        <p><input type="submit" value="submit" /></p>
- 
+    <form action="" method="POST" style="text-align:center">
+	    {{ form.hidden_tag() }}
+    <p>
+		{{ form.username.label }}<br>
+		{{ form.username(size=32) }}<br>
+		{% for error in form.username.errors %}
+		<span style="color: red;">[{{ error }}]</span>
+		{% endfor %}
+	</p>
+    <p>
+		{{ form.password.label }}<br>
+		{{ form.password(size=32) }}<br>
+		{% for error in form.password.errors %}
+		<span style="color: red;">[{{ error }}]</span>
+		{% endfor %}
+	</p>
+    <p>{{ form.remember_me() }} {{ form.remember_me.label }} </p>
+    <p>{{ form.submit() }}</p>
     </form>
 </body>
 </html>
