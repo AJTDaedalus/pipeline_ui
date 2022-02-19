@@ -37,6 +37,27 @@ class User(db.Model, UserMixin):
         
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-        
     def __repr__(self):
         return '<User {}>'.format(self.username)
+             
+
+    # The home page should have 5 tabs, each capable of performing some type of request handling
+    # the data for each tab will be stored in the RequestDetails tables
+
+class RequestDetails(db.Model):
+    Id = db.Column(db.Integer, primary_key=True)
+    requestData = db.Column(db.CHAR(None), unique=False, nullable=True)
+    status = db.Column(db.String(20), unique=False, nullable=True)
+    createDate = db.Column(db.DateTime, unique=False, nullable=False)
+    userId = db.Column(db.Integer, unique=False, nullable=False)
+    errorMessage = db.Column(db.String(100), unique=False, nullable=False)
+
+    def __init__(self, requestData, status, createDate, userId, errorMessage):
+        self.requestData = requestData
+        self.status = status
+        self.createDate = createDate
+        self.userId = userId
+        self.errorMessage = errorMessage
+
+
+
