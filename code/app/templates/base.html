@@ -2,12 +2,15 @@
 <html>
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <title>{% block title %}{% endblock %}</title>
+    <title>{% block title %}{% endblock %}</title><center>
+    <image src="{{url_for('static',filename = 'pipelinelogo2.png')}}"
+    width = "150"
+    height = "150"
+    text-algign:center></image>
     </head>
     <meta charset="UTF-8">
     <body>
         <link rel="stylesheet" href='/static/css/formats.css' />
-        <image src="{{url_for('static',filename = 'logo2.jpeg')}}">
         <h1 style="text-align:center">
           Bioinformatics Pipeline UI</h1>
         <nav class= "navbar navbar-expand-lg navbar-light bg-light">
@@ -72,5 +75,6 @@
        
 <script src="//code.jquery.com/jquery.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+      </center>
 </body>
 </html>
