@@ -31,6 +31,8 @@
 		{% for error in form.password.errors %}
 		<span style="color: red;">[{{ error }}]</span>
 		{% endfor %}
+		<p style="text-align:center"><p style = color:Tomato><small><i>*Password must be at least 8 characters, include at least one capital letter, one numerical digit and one special character.</i></small></p>
+
 	</p>
 	<p>
 	<p>{{ form.remember_me() }} {{ form.remember_me.label }} </p>
