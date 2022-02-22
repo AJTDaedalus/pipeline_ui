@@ -13,7 +13,6 @@ def register():
     form = RegistrationForm()
     password=form.password.data
     SpecialSym="*?!'^+%&/()=}][{$#"
-    val=False
     if form.validate_on_submit():
         if User.query.filter_by(username=form.username.data.lower()).first():
             flash('User already exists.', 'error')
@@ -21,7 +20,6 @@ def register():
         if len(password) < 8:
             flash('Password too short. Must be 8 characters','error')
             return redirect(url_for('auth.register'))
-            val=TextTestResult
         if not any (char.isupper() for char in password):
             flash('Password must include at least one upper case letter','error')
             return redirect(url_for('auth.register'))
