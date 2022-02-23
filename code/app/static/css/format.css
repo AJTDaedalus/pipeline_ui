@@ -22,4 +22,10 @@ h1 {
   color: rgb(80, 105, 187);
   }
 
+p1 {
+    font-family:"Century Gothic",Verdana,sans-serif;
+    border: 30px solid rgb(202, 208, 214);
+    border-radius: 30px;
+    background-color: rgb(202, 208, 214);
+  }
     
