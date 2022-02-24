@@ -9,25 +9,34 @@ from werkzeug.wrappers import Request, Response
 from werkzeug.exceptions import HTTPException, NotFound, Forbidden
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin, login_required
 from flask_principal import Principal, Permission, RoleNeed, Identity, AnonymousIdentity, identity_changed, identity_loaded
+from app.models import db, User, Role
+from flask_security import login_user
 
 admin_permission = Permission(RoleNeed('admin'))
 #wasn't sure what to name these other two levels of permission
 low_permission = Permission(RoleNeed('low'))
 medium_permission = Permission(RoleNeed('medium'))
 
- 
+
+# Setup datastore for Flask-Security
+user_datastore = SQLAlchemyUserDatastore(db, User, Role)
+#Set up security
+security=Security(user_datastore, login_form=LoginForm, register_form=RegistrationForm)
+
+
+
 #registration route
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        if User.query.filter_by(username=form.username.data.lower()).first():
+        if User.query.filter_by(email=form.email.data.lower()).first():
             flash('User already exists.', category='error')
             return redirect(url_for('home.index'))
         else:
-            user = User(username=form.username.data.lower(),
-                        email=form.email.data)
+            user = User(email=form.email.data)
             user.set_password(form.password.data)
+            user_datastore.set_uniquifier(user)
             db.session.add(user)
             db.session.commit()
             flash('Congratulations, you are now a registered user!',
@@ -40,9 +49,9 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data.lower()).first()
+        user = User.query.filter_by(email=form.email.data.lower()).first()
         if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
+            flash('Invalid email or password')
             return redirect(url_for('home.index'))
         login_user(user, remember=form.remember_me.data)
         identity_changed.send(

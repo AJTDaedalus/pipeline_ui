@@ -7,21 +7,22 @@ from flask import Flask, flash, redirect, url_for, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from flask_login import LoginManager, current_user, login_required, login_user
-from werkzeug.security import generate_password_hash, check_password_hash
+from passlib.hash import pbkdf2_sha512
 from flask_principal import Identity, Permission, RoleNeed, identity_loaded, identity_changed, UserNeed
 import flask_login
 import flask_roles
-from flask_security import SQLAlchemyUserDatastore
+from flask_security import SQLAlchemyUserDatastore, Security
+from flask_security.models import fsqla_v2 as fsqla
 
 login_manager = LoginManager()
 login_manager.login_view = 'login'
 db = SQLAlchemy()
 
-
+fsqla.FsModels.set_db_info(db)
 
 @login_manager.user_loader
-def load_user(id):
-    user = db.session.query(User).get(int(id))
+def load_user(user_id):
+    user = db.session.query(User).get(int(user_id))
     return user
 
 @login_manager.unauthorized_handler
@@ -35,14 +36,15 @@ def unauthorized():
     
 
 
-class Role(db.Model, flask_roles.RoleMixin):
+class Role(db.Model, fsqla.FsRoleMixin):
     """
     Role class. A role has the following properties
      - name: A textual representation e.g. accounts.send_money
      - parent: Optional reference to a parent role that owns this role.
     """
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
+    name = db.Column(db.String(80), unique=True, nullable=False)
+    description = db.Column(db.String(140), unique=False, nullable=False)
     parent_id = db.Column(db.Integer, db.ForeignKey("role.id"))
     children = db.relationship(
         "Role",
@@ -55,7 +57,7 @@ class Role(db.Model, flask_roles.RoleMixin):
     def __repr__(self):
         return "<Role %r>" % self.name
 
-class User(db.Model, flask_login.UserMixin, flask_roles.UserMixin):
+class User(db.Model, fsqla.FsUserMixin):
     """
     User class. Your Typical user class.
     You will need to add UserMixin from flask_login and flask_roles
@@ -66,11 +68,10 @@ class User(db.Model, flask_login.UserMixin, flask_roles.UserMixin):
     __tablename__ = 'user'
     
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), index=True, unique=True)
     active = db.Column(db.Boolean, default=True)
     email = db.Column(db.String(120), index=True, unique=True)
-    password_hash = db.Column(db.String(128))
-    #fs_uniquifier = db.Column(db.String(255), unique=True, nullable=True)
+    password = db.Column(db.String(128))
+    fs_uniquifier = db.Column(db.String(255), unique=True, nullable=False)
     roles = db.relationship(
         "Role",
         secondary="user_role",
@@ -81,10 +82,10 @@ class User(db.Model, flask_login.UserMixin, flask_roles.UserMixin):
     )
     
     def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+        self.password = pbkdf2_sha512.using(salt_size=8).hash(password)
         
     def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        return pbkdf2_sha512.verify(password, self.password)
         
     def __repr__(self):
         return "<User %r>" % self.username
@@ -128,5 +129,3 @@ class UserGroup(db.Model):
         db.Integer, db.ForeignKey("user.id"), primary_key=True,
     )    
 
-# Setup datastore for Flask-Security
-user_datastore = SQLAlchemyUserDatastore(db, User, Role)
