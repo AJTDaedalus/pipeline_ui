@@ -3,10 +3,9 @@ FROM python:3.7.2-stretch
 ENV LISTEN_PORT=5000
 EXPOSE 5000
 
-WORKDIR /code
+WORKDIR /usr/src/app
 
-COPY ./requirements.txt /code
+COPY ./requirements.txt /usr/src/app/requirements.txt
 RUN pip install -r requirements.txt
 
-COPY ./code /code
-CMD python main.py
+COPY ./code /usr/src/app

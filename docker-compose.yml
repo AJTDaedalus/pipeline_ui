@@ -2,8 +2,11 @@ version: "3.8"
 services:
   app:
     build: ./
+    command: python main.py run -h 0.0.0.0
     links:
       - db
+    volumes:
+      - ./code:/usr/src/code
     ports:
       - "5000:5000"
 
