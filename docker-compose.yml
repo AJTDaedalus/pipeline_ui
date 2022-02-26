@@ -34,15 +34,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-  proxy:
-    build: proxy
-    #restart: always
-    ports:
-      - 80:80
-    depends_on:
-      - app
-    networks:
-      - frontnet
 volumes:
   db-data:
 networks:
