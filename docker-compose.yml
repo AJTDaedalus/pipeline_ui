@@ -23,11 +23,11 @@ services:
       - "32000:3306"
   app:
     build: ./
-    command: flask run --host 0.0.0.0
+    command: gunicorn -w 1 -b 0.0.0.0:8000 wsgi:app
     #restart: always
     ports:
       - 5000:5000
-      - 8080:8080
+      - 8000:8000
     networks:
       - backnet
       - frontnet
