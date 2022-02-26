@@ -1,0 +1,12 @@
+upstream app {
+    server http://app:8080;
+}
+
+server {
+    listen       8080;
+    server_name  localhost;
+    location / {
+        proxy_pass   http://app:5000;
+    }
+
+}
