@@ -7,3 +7,4 @@ WTForms==3.0.0
 email-validator==1.1.3
 itsdangerous==2.0.1
 gunicorn==20.1.0
+mysql-connector==2.2.9
