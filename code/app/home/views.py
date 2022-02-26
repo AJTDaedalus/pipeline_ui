@@ -14,9 +14,6 @@ def login():
 @home.route("/admin")
 def admin():
     return render_template("admin.html")
-@home.route("/mypage1")
-def mypage1():
-    return render_template("index.html")
 @home.route("/testpage")
 def testpage():
     return render_template("testpage.html")
