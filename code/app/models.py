@@ -9,15 +9,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from flask_login import LoginManager, current_user, login_required, login_user
 from passlib.hash import pbkdf2_sha512
-#from app.auth.role_required import ROLE_required, not_ROLE
+
 
 db = SQLAlchemy()
-
-#LoginManager.not_ROLE = not_ROLE
-login_manager = LoginManager()
-login_manager.login_view = 'login'
-login_manager.not_ROLE_view = 'not_ROLE'
-
 
 
 
@@ -43,6 +37,12 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return "<User %r>" % self.email        
         
+from app.auth.role_required import ROLE_required, not_ROLE
+LoginManager.not_ROLE = not_ROLE
+login_manager = LoginManager()
+login_manager.login_view = 'login'
+login_manager.not_ROLE_view = 'auth.not_ROLE'
+
 
 @login_manager.user_loader
 def load_user(user_id):
