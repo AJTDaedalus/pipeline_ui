@@ -1,6 +1,8 @@
 from flask import render_template, Response, redirect, session, request, url_for
 from app.auth.forms import LoginForm
-from app.auth.views import admin_permission
+from app.auth.role_required import ROLE_required, not_ROLE
+from app.models import login_required
+
 
 #Import blueprint
 from app.home import home
@@ -15,7 +17,7 @@ def login():
     return render_template('security/login_user.html', form=form)
     
 @home.route("/admin")
-@admin_permission.require(http_exception=403)
+@ROLE_required
 def admin():
     return render_template("admin.html")
     

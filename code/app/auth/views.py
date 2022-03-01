@@ -1,32 +1,14 @@
 from flask import render_template, redirect, url_for, flash, request, Flask, current_app, session
-from app.models import db
-from app.auth.forms import RegistrationForm
-from app.auth.forms import LoginForm
-from app.models import *
+from app.auth.forms import RegistrationForm, LoginForm
+from flask_login import login_user, login_required, current_user, logout_user
 from app.auth import auth
-from flask_login import (login_user, login_required, current_user, logout_user)
-from werkzeug.wrappers import Request, Response
-from werkzeug.exceptions import HTTPException, NotFound, Forbidden
-from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin, login_required
-from flask_principal import Principal, Permission, RoleNeed, Identity, AnonymousIdentity, identity_changed, identity_loaded
-from app.models import db, User, Role
-from flask_security import login_user
-
-admin_permission = Permission(RoleNeed('admin'))
-#wasn't sure what to name these other two levels of permission
-low_permission = Permission(RoleNeed('low'))
-medium_permission = Permission(RoleNeed('medium'))
-
-
-# Setup datastore for Flask-Security
-user_datastore = SQLAlchemyUserDatastore(db, User, Role)
-#Set up security
-security=Security(user_datastore, login_form=LoginForm, register_form=RegistrationForm)
-
+from app.auth.role_required import ROLE_required, not_ROLE
+from app.models import db
+from app.models import User
 
 
 #registration route
-@auth.route('/register', methods=['GET', 'POST'])
+@auth.route('/register', methods=['GET','POST'])
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -36,7 +18,6 @@ def register():
         else:
             user = User(email=form.email.data)
             user.set_password(form.password.data)
-            user_datastore.set_uniquifier(user)
             db.session.add(user)
             db.session.commit()
             flash('Congratulations, you are now a registered user!',
@@ -54,9 +35,6 @@ def login():
             flash('Invalid email or password')
             return redirect(url_for('home.index'))
         login_user(user, remember=form.remember_me.data)
-        identity_changed.send(
-            current_app._get_current_object(), identity=Identity(user.id),
-        )
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('home.index')
@@ -68,24 +46,27 @@ def login():
 @login_required
 def logout():
     logout_user()
-    #Remove session keys set by Flask-Principal
-    for key in ('identity.name', 'identity.auth_type'):
-        session.pop(key,None)
-    #Tell Flask-Principal the user is anonymous
-    identity_changed.send(current_app._get_current_object(), identity=AnonymousIdentity())
     return redirect(url_for('home.index'))
+
+@auth.route('/user-page/')
+@login_required
+def user_page():
+    return 'Any logged-in users can visit this page.'
     
-#@auth.errorhandler(werkzeug.exceptions.Forbidden)
-#def handle_bad_request(e):
-#    return(
-#        Response("Forbidden"),
-#        403,
-#    )
+@auth.route('/not-ROLE/')
+@login_required
+def not_ROLE():
+    return "Authorized users without ROLE privileges are redirected here.<br>\
+            Notice that this view can be @login_required, because only users\
+            who are authorized but who don't have ROLE privileges will be\
+            redirected here.<br>\
+            Unauthorized users accessing an @ROLE_required view are redirected\
+            to the login_view, so a @login_required decorator is not\
+            additionally needed on a @ROLL_required view."
 
 
-
-#@auth.route("/protected/view")
-#@login_required
-#@view_permission.require(403)
-#def protected_view():
-#    return Response("view protected")    
+@auth.route('/ROLE-page/')
+@ROLE_required
+def ROLE_page():
+    return 'Only logged-in ROLE users can visit this page.'
+    
