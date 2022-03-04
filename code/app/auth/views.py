@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, flash, request, Flask, cur
 from app.auth.forms import RegistrationForm, LoginForm
 from flask_login import login_user, login_required, current_user, logout_user
 from app.auth import auth
-from app.auth.role_required import ROLE_required, not_ROLE
+from app.auth.permission_required import permission_required, admin_required
 from app.models import db
 from app.models import User
 
@@ -16,8 +16,11 @@ def register():
             flash('User already exists.', category='error')
             return redirect(url_for('home.index'))
         else:
-            user = User(email=form.email.data)
-            user.set_password(form.password.data)
+            user = User(
+                first_name=form.first_name.data,
+                last_name=form.last_name.data,
+                email=form.email.data,
+                password=form.password.data)
             db.session.add(user)
             db.session.commit()
             flash('Congratulations, you are now a registered user!',
@@ -47,26 +50,4 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('home.index'))
-
-@auth.route('/user-page/')
-@login_required
-def user_page():
-    return 'Any logged-in users can visit this page.'
-    
-@auth.route('/not-ROLE/')
-@login_required
-def not_ROLE():
-    return "Authorized users without ROLE privileges are redirected here.<br>\
-            Notice that this view can be @login_required, because only users\
-            who are authorized but who don't have ROLE privileges will be\
-            redirected here.<br>\
-            Unauthorized users accessing an @ROLE_required view are redirected\
-            to the login_view, so a @login_required decorator is not\
-            additionally needed on a @ROLL_required view."
-
-
-@auth.route('/ROLE-page/')
-@ROLE_required
-def ROLE_page():
-    return 'Only logged-in ROLE users can visit this page.'
     

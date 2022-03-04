@@ -12,6 +12,20 @@
     <form action="" method="POST" style="text-align:center">
 	    {{ form.hidden_tag() }}
 	<p>
+	    {{ form.first_name.label }}<br>
+	    {{ form.first_name(size=64) }}<br>
+		{% for error in form.first_name.errors %}
+		<span style="color: red;">[{{ error }}]</span>
+		{% endfor %}
+	</p>
+	<p>
+	    {{ form.last_name.label }}<br>
+	    {{ form.last_name(size=64) }}<br>
+		{% for error in form.last_name.errors %}
+		<span style="color: red;">[{{ error }}]</span>
+		{% endfor %}
+	</p>
+	<p>
 	    {{ form.email.label }}<br>
 	    {{ form.email(size=64) }}<br>
 		{% for error in form.email.errors %}
@@ -26,7 +40,12 @@
 		{% endfor %}
 	</p>
 	<p>
-	<p>{{ form.remember_me() }} {{ form.remember_me.label }} </p>
+	    {{ form.password2.label }}<br>
+	    {{ form.password2(size=32) }}<br>
+		{% for error in form.password2.errors %}
+		<span style="color: red;">[{{ error }}]</span>
+		{% endfor %}
+	</p>
 	<p>{{ form.submit() }}</p>
     </form>
 </body>
