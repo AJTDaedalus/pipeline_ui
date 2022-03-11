@@ -4,11 +4,13 @@
 {% extends "base.html" %}
 {% block title %}Registration Page{% endblock %}
 {% block page_content %}
+
 <p style="text-align:center">Register Here</p>
 <head>
     <title>Registration Page</title>
 </head>
 <body>
+	
     <form action="" method="POST" style="text-align:center">
 	    {{ form.hidden_tag() }}
 	<p>
@@ -31,11 +33,20 @@
 		{% for error in form.password.errors %}
 		<span style="color: red;">[{{ error }}]</span>
 		{% endfor %}
-	</p>
+		<p style="text-align:center"><p style = color:Tomato><small><i>*Password must be at least 8 characters, include at least one capital letter, one numerical digit and one special character.</i></small></p>
+
+
 	<p>
-	<p>{{ form.remember_me() }} {{ form.remember_me.label }} </p>
-	<p>{{ form.submit() }}</p>
+		
+		
+		{{ form.remember_me() }} {{ form.remember_me.label }} </p>
+	<p>{{ form.submit() }}
+
+		<input type="reset">
+
+	</p>
     </form>
+	
 </body>
 </html>
 {% endblock %}
