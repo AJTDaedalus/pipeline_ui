@@ -11,6 +11,8 @@ from flask_login import LoginManager, current_user, login_required, login_user
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import BadSignature, SignatureExpired
 from werkzeug.security import check_password_hash, generate_password_hash
+from sqlalchemy import Table, ForeignKey, Column, Integer
+from sqlalchemy.orm import relationship
 
 
 
@@ -19,7 +21,12 @@ db = SQLAlchemy()
 class Permission:
     GENERAL = 0x01
     ADMINISTER = 0xff
-    
+
+user_role = Table('user_role', db.Model.metadata,
+    db.Column('users_id', ForeignKey('users.id')),
+    db.Column('roles_id', ForeignKey('roles.id'))
+)
+   
 class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
@@ -27,12 +34,12 @@ class Role(db.Model):
     index = db.Column(db.String(64))
     default = db.Column(db.Boolean, default=False, index=True)
     permissions = db.Column(db.Integer)
-    users = db.relationship('User', backref='role', lazy='dynamic')
+    users = db.relationship('User', secondary=user_role, backref='role')
 
     @staticmethod
     def insert_roles():
         roles = {
-            'Placeholder1': (Permission.GENERAL, 'main', True),
+            'Placeholder1': (Permission.GENERAL, 'placeholder1', True),
             'Placeholder2': (Permission.GENERAL, 'placeholder2', False),
             'Administrator': (
                 Permission.ADMINISTER,
