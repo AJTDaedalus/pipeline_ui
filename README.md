@@ -20,12 +20,11 @@
 [![Contributors][contributors-shield]][contributors-url]
 
 <!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://github.com/AJTDaedalus/pipeline_ui">  
+## Pipeline UI
+<p align="center">
   <img src="https://user-images.githubusercontent.com/98370207/158001923-83de168b-587f-43df-bd8c-4abfe016c5b0.png" width="300" height="300">
-  </a>  
-</div>
+  </p>  
+<br /><br />
 
 <!-- TABLE OF CONTENTS -->
 <details>
