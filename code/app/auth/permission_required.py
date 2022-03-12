@@ -1,7 +1,7 @@
 #code from https://hack4impact.github.io/flask-base/assets/
 from app.models import Permission
 from functools import wraps
-from flask import abort
+from flask import abort, redirect, url_for
 from flask_login import current_user
 
 def permission_required(permission):

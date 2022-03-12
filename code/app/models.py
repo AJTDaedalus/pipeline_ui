@@ -22,9 +22,9 @@ class Permission:
     GENERAL = 0x01
     ADMINISTER = 0xff
 
-user_role = Table('user_role', db.Model.metadata,
-    db.Column('users_id', ForeignKey('users.id')),
-    db.Column('roles_id', ForeignKey('roles.id'))
+user_role = db.Table('user_role', db.Model.metadata,
+    db.Column('user_id', db.Integer, ForeignKey('users.id')),
+    db.Column('role_id', db.Integer, ForeignKey('roles.id')),
 )
    
 class Role(db.Model):
@@ -34,8 +34,7 @@ class Role(db.Model):
     index = db.Column(db.String(64))
     default = db.Column(db.Boolean, default=False, index=True)
     permissions = db.Column(db.Integer)
-    users = db.relationship('User', secondary=user_role, backref='role')
-
+    
     @staticmethod
     def insert_roles():
         roles = {
@@ -72,23 +71,27 @@ class User(UserMixin, db.Model):
     last_name = db.Column(db.String(64), index=True)
     email = db.Column(db.String(64), index=True, unique=True)
     password_hash = db.Column(db.String(128))
-    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
-    
+    has_roles = db.relationship(
+        "Role",
+        secondary=user_role,
+        backref='role_for'
+        )
+        
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
-        if self.role is None:
+        #if self.role is None:
             #if self.email == current_app.config['ADMIN_EMAIL']:
             #    self.role = Role.query.filter_by(
             #        permissions=Permission.ADMINISTER).first()
             #if self.role is None:
-            self.role = Role.query.filter_by(default=True).first()
+         #   self.role = Role.query.filter_by(default=True).first()
 
     def full_name(self):
         return '%s %s' % (self.first_name, self.last_name)
 
     def can(self, permissions):
-        return self.role is not None and \
-            (self.role.permissions & permissions) == permissions
+        return self.has_roles is not None and \
+            (self.has_roles.permissions & permissions) == permissions
 
     def is_admin(self):
         return self.can(Permission.ADMINISTER)
