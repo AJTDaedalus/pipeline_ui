@@ -66,9 +66,34 @@ This project is in support of their growing bioinformatics infrastructure that s
 
 <!-- GETTING STARTED -->
 ## Getting Started
+### Deployment
 
-TBD - when instructions are available
+#### Dependencies
 
+- Docker
+- Python 3.7 environment
+- Docker-Compose
+
+#### Deployment Settings:
+- Change secret key/password
+
+#### Docker Compose Commands:
+- `server up`
+- `server down`
+- `up --build` (rebuild with changes)
+
+#### Customization
+ ##### Adding new pages/functions:
+  - Copying and editing blueprints
+  - Adding to Navbar
+  - Adding access roles
+  - Adding new models
+  - Initializing blueprint in factory
+
+#### Deploying changes to production:
+  - Flask migrate explanation
+  - `docker compose up --build` reminder
+  
 ### Requirements
 ```
 pip install -r Requirements.txt
