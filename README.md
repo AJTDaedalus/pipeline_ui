@@ -22,10 +22,9 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/AJTDaedalus/pipeline_ui">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
-<h3 align="center">Pipeline UI</h3>
+  <a href="https://github.com/AJTDaedalus/pipeline_ui">  
+  <img src="https://user-images.githubusercontent.com/98370207/158001923-83de168b-587f-43df-bd8c-4abfe016c5b0.png" width="300" height="300">
+  </a>  
 </div>
 
 <!-- TABLE OF CONTENTS -->
