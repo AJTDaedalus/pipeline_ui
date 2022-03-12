@@ -9,8 +9,9 @@ from settings import DevelopmentSettings
 from app.models import db
 from app.models import login_manager
 from flask_login import current_user, login_required
+from flask_wtf.csrf import CSRFProtect
 
-
+csrf = CSRFProtect()
 
     
 def create_app(settings=DevelopmentSettings):
@@ -27,6 +28,7 @@ def create_app(settings=DevelopmentSettings):
                 
     db.init_app(app)
     login_manager.init_app(app)
+    csrf.init_app(app)
     
     
     with app.app_context():

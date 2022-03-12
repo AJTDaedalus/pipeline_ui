@@ -26,6 +26,7 @@ def mypage1():
     return render_template("index.html")
 
 @home.route("/testpage")
+@login_required
 def testpage():
     return render_template("testpage.html")
 

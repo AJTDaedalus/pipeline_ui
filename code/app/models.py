@@ -1,6 +1,6 @@
 '''
 BIOT670 Initial database module for pipeline UI
-taken from https://flask-roles.readthedocs.io/en/latest/usage.html
+taken from https://github.com/hack4impact/flask-base/blob/master/app/models/user.py
 
 '''
 
@@ -32,7 +32,8 @@ class Role(db.Model):
     @staticmethod
     def insert_roles():
         roles = {
-            'User': (Permission.GENERAL, 'main', True),
+            'Placeholder1': (Permission.GENERAL, 'main', True),
+            'Placeholder2': (Permission.GENERAL, 'placeholder2', False),
             'Administrator': (
                 Permission.ADMINISTER,
                 'admin',
@@ -194,6 +195,8 @@ class User(UserMixin, db.Model):
 
 login_manager = LoginManager()
 login_manager.login_view = 'login'
+
+
 
 class AnonymousUser(AnonymousUserMixin):
     def can(self, _):

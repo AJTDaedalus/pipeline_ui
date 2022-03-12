@@ -4,13 +4,15 @@ from flask_login import login_user, login_required, current_user, logout_user
 from app.auth import auth
 from app.auth.permission_required import permission_required, admin_required
 from app.models import db
-from app.models import User
+from app.models import User, Role
+
 
 
 #registration route
 @auth.route('/register', methods=['GET','POST'])
 def register():
     form = RegistrationForm()
+    Role.insert_roles()
     if form.validate_on_submit():
         if User.query.filter_by(email=form.email.data.lower()).first():
             flash('User already exists.', category='error')
