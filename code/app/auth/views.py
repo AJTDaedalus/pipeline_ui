@@ -7,7 +7,6 @@ from app.models import db
 from app.models import User, Role
 
 
-
 #registration route
 @auth.route('/register', methods=['GET','POST'])
 def register():

@@ -7,7 +7,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from settings import DevelopmentSettings
 from app.models import db
-from app.models import login_manager
+from app.models import login_manager, User, Role
 from flask_login import current_user, login_required
 from flask_wtf.csrf import CSRFProtect
 
@@ -33,6 +33,12 @@ def create_app(settings=DevelopmentSettings):
     
     with app.app_context():
         db.create_all()
+        test_user = User(email='me123@gmail.com', first_name='Me', last_name='MEME') 
+        test_role = Role(name='test')
+        test_user.roles.append(test_role)
+        print (test_user.roles)
+        db.session.add(test_user)
+        db.session.commit()
 
         return app
 

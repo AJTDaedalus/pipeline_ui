@@ -26,39 +26,6 @@ user_role = db.Table('user_role', db.Model.metadata,
     db.Column('user_id', db.Integer, ForeignKey('users.id')),
     db.Column('role_id', db.Integer, ForeignKey('roles.id')),
 )
-   
-class Role(db.Model):
-    __tablename__ = 'roles'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), unique=True)
-    index = db.Column(db.String(64))
-    default = db.Column(db.Boolean, default=False, index=True)
-    permissions = db.Column(db.Integer)
-    
-    @staticmethod
-    def insert_roles():
-        roles = {
-            'Placeholder1': (Permission.GENERAL, 'placeholder1', True),
-            'Placeholder2': (Permission.GENERAL, 'placeholder2', False),
-            'Administrator': (
-                Permission.ADMINISTER,
-                'admin',
-                False  # grants all permissions
-            )
-        }
-        for r in roles:
-            role = Role.query.filter_by(name=r).first()
-            if role is None:
-                role = Role(name=r)
-            role.permissions = roles[r][0]
-            role.index = roles[r][1]
-            role.default = roles[r][2]
-            db.session.add(role)
-        db.session.commit()
-
-    def __repr__(self):
-        return '<Role \'%s\'>' % self.name
-    
 
 class User(UserMixin, db.Model):
     """
@@ -69,12 +36,11 @@ class User(UserMixin, db.Model):
     confirmed = db.Column(db.Boolean, default=False)
     first_name = db.Column(db.String(64), index=True)
     last_name = db.Column(db.String(64), index=True)
-    email = db.Column(db.String(64), index=True, unique=True)
+    email = db.Column(db.String(64), index=True, unique=False)
     password_hash = db.Column(db.String(128))
-    has_roles = db.relationship(
+    roles = db.relationship(
         "Role",
         secondary=user_role,
-        backref='role_for'
         )
         
     def __init__(self, **kwargs):
@@ -172,35 +138,43 @@ class User(UserMixin, db.Model):
         db.session.commit()
         return True
 
-    @staticmethod
-    def generate_fake(count=100, **kwargs):
-        """Generate a number of fake users for testing."""
-        from sqlalchemy.exc import IntegrityError
-        from random import seed, choice
-        from faker import Faker
-
-        fake = Faker()
-        roles = Role.query.all()
-
-        seed()
-        for i in range(count):
-            u = User(
-                first_name=fake.first_name(),
-                last_name=fake.last_name(),
-                email=fake.email(),
-                password='password',
-                confirmed=True,
-                role=choice(roles),
-                **kwargs)
-            db.session.add(u)
-            try:
-                db.session.commit()
-            except IntegrityError:
-                db.session.rollback()
-
     def __repr__(self):
         return '<User \'%s\'>' % self.full_name()        
-        
+    
+class Role(db.Model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=False)
+    index = db.Column(db.String(64))
+    default = db.Column(db.Boolean, default=False, index=True)
+    permissions = db.Column(db.Integer)
+    
+    @staticmethod
+    def insert_roles():
+        roles = {
+            'Placeholder1': (Permission.GENERAL, 'placeholder1', True),
+            'Placeholder2': (Permission.GENERAL, 'placeholder2', False),
+            'Administrator': (
+                Permission.ADMINISTER,
+                'admin',
+                False  # grants all permissions
+            )
+        }
+        for r in roles:
+            role = Role.query.filter_by(name=r).first()
+            if role is None:
+                role = Role(name=r)
+            role.permissions = roles[r][0]
+            role.index = roles[r][1]
+            role.default = roles[r][2]
+            db.session.add(role)
+        db.session.commit()
+
+    def __repr__(self):
+        return '<Role \'%s\'>' % self.name
+    
+
+       
 
 
 login_manager = LoginManager()
@@ -228,4 +202,6 @@ def unauthorized():
     Response("You must be logged in to view that page."),
     401,
     )
-    
+
+
+
