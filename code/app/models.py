@@ -49,15 +49,29 @@ class RequestDetails(db.Model):
     status = db.Column(db.String(20), unique=False, nullable=True)
     createDate = db.Column(db.DateTime, unique=False, nullable=False)
     userId = db.Column(db.Integer, unique=False, nullable=False)
+    Output = db.Column(db.Text, unique=False, nullable=False)
     errorMessage = db.Column(db.String(100), unique=False, nullable=False)
     priority = db.Column(db.Integer)
 
-    def __init__(self, requestData, status, createDate, userId, errorMessage):
+    def __init__(self, requestData, status, createDate, userId, Output, errorMessage):
         self.requestData = requestData
         self.status = status
         self.createDate = createDate
         self.userId = userId
+        self.Output = Output
         self.errorMessage = errorMessage
+
+class Test(db.Model):
+    Id = db.Column(db.Integer, primary_key=True)
+    Column1 = db.Column(db.CHAR(None))
+    Column2 = db.Column(db.CHAR(None))
+    Column3 = db.Column(db.CHAR(None))
+
+
+    def __init__(self, Column1, Column2, Column3):
+        self.Column1 = Column1
+        self.Column2 = Column2
+        self.Column3 = Column3
 
 
 
