@@ -20,6 +20,7 @@ db = SQLAlchemy()
 
 class Permission:
     GENERAL = 0x01
+    PLACEHOLDER1 = 0x05
     ADMINISTER = 0xff
 
 user_role = db.Table('user_role', db.Model.metadata,
@@ -36,7 +37,7 @@ class User(UserMixin, db.Model):
     confirmed = db.Column(db.Boolean, default=False)
     first_name = db.Column(db.String(64), index=True)
     last_name = db.Column(db.String(64), index=True)
-    email = db.Column(db.String(64), index=True, unique=False)
+    email = db.Column(db.String(64), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     roles = db.relationship(
         "Role",
@@ -56,8 +57,8 @@ class User(UserMixin, db.Model):
         return '%s %s' % (self.first_name, self.last_name)
 
     def can(self, permissions):
-        return self.has_roles is not None and \
-            (self.has_roles.permissions & permissions) == permissions
+        return self.roles is not None and \
+            (self.roles.permissions & permissions) == permissions
 
     def is_admin(self):
         return self.can(Permission.ADMINISTER)
@@ -144,7 +145,7 @@ class User(UserMixin, db.Model):
 class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), unique=False)
+    name = db.Column(db.String(64), unique=True)
     index = db.Column(db.String(64))
     default = db.Column(db.Boolean, default=False, index=True)
     permissions = db.Column(db.Integer)
@@ -152,7 +153,7 @@ class Role(db.Model):
     @staticmethod
     def insert_roles():
         roles = {
-            'Placeholder1': (Permission.GENERAL, 'placeholder1', True),
+            'Placeholder1': (Permission.PLACEHOLDER1, 'placeholder1', True),
             'Placeholder2': (Permission.GENERAL, 'placeholder2', False),
             'Administrator': (
                 Permission.ADMINISTER,
