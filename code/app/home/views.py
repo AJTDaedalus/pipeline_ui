@@ -17,7 +17,7 @@ def login():
     return render_template('security/login_user.html', form=form)
     
 @home.route("/admin")
-@admin_required
+@permission_required('admin')
 def admin():
     return render_template("admin.html")
     
