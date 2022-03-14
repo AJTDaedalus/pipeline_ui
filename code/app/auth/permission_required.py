@@ -10,7 +10,7 @@ def permission_required(permission):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            if not current_user.query.filter(User.roles.any(permission)).all():
+            if not current_user.query.filter(User.roles.any(Role.name==permission)).all():
                 abort(403)
             return f(*args, **kwargs)
             #redirect(url_for("home.lacking_permission"))

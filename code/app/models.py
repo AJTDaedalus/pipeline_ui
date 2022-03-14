@@ -43,7 +43,7 @@ class User(UserMixin, db.Model):
         "Role",
         secondary=user_role,
         )
-        
+
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         #if self.role is None:
@@ -57,8 +57,10 @@ class User(UserMixin, db.Model):
         return '%s %s' % (self.first_name, self.last_name)
 
     def can(self, permissions):
-        return self.roles is not None and \
-            (self.roles.permissions & permissions) == permissions
+        if current_user.query.filter(current_user.roles.any(role.name==permissions)).all():
+            return True
+        else:
+            return False
 
     def is_admin(self):
         return self.can(Permission.ADMINISTER)
