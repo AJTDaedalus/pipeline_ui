@@ -1,5 +1,5 @@
-#code from https://hack4impact.github.io/flask-base/assets/
-from app.models import Permission, User, Role
+#code modified from https://hack4impact.github.io/flask-base/assets/
+from app.models import User, Role
 from functools import wraps
 from flask import abort, redirect, url_for
 from flask_login import current_user
@@ -10,12 +10,9 @@ def permission_required(permission):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            if not current_user.query.filter(User.roles.any(Role.name==permission)).all():
+            # the following line of code from https://stackoverflow.com/questions/598398/searching-a-list-of-objects-in-python                        
+            if not any(r for r in current_user.roles if r.name==permission):
                 abort(403)
             return f(*args, **kwargs)
-            #redirect(url_for("home.lacking_permission"))
         return decorated_function
     return decorator
-
-def admin_required(f):
-    return permission_required(Permission.ADMINISTER)(f)

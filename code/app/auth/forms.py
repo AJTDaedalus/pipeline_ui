@@ -36,6 +36,6 @@ class LoginForm(FlaskForm):
         'Email', validators=[InputRequired(),
                              Length(1, 64),
                              Email()])
-    password = PasswordField('Password')#, validators=[InputRequired()])
+    password = PasswordField('Password', validators=[InputRequired()])
     remember_me = BooleanField('Keep me logged in')
     submit = SubmitField('Log in')

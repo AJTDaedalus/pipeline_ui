@@ -35,10 +35,10 @@ def create_app(settings=DevelopmentSettings):
         db.create_all()
         test_user = User(email='me123@gmail.com', first_name='Me', last_name='MEME', password="12345678") 
         #test_role = Role(name='test')
-        test_user.roles.append(Role(name='admin', permissions='255'))
-        print (test_user.roles)
+        test_user.roles.append(Role(name='admin'))
+        #print (test_user.roles)
         db.session.add(test_user)
         db.session.commit()
-
+        
         return app
 
