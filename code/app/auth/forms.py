@@ -16,7 +16,7 @@ class RegistrationForm(FlaskForm):
         'Email', validators=[InputRequired(),
                              Length(1, 64),
                              Email(),
-                             Regexp('.+@eurofins-viracor.com$', flags=0, message='Email must be @eurofins-viracor.com')])
+                             Regexp('.+@eurofins-viracor.com$', flags=0, message='Use company email')])
     password = PasswordField(
         'Password',
         validators=[
