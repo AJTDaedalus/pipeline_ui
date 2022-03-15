@@ -100,7 +100,7 @@ class Role(db.Model):
     @staticmethod
     def insert_roles():
         roles = {
-            'Placeholder1': ('placeholder1', True),
+            'Placeholder1': ('placeholder1', False),
             'Placeholder2': ('placeholder2', False),
             'Administrator': (
                 'admin',
