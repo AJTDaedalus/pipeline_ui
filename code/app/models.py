@@ -142,8 +142,8 @@ class User(UserMixin, db.Model):
         return True
 
     def __repr__(self):
-        return '<User \'%s\'>' % self.full_name()        
-    
+        return '<User \'%s\'>' % self.full_name()
+
 class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
@@ -151,7 +151,7 @@ class Role(db.Model):
     index = db.Column(db.String(64))
     default = db.Column(db.Boolean, default=False, index=True)
     permissions = db.Column(db.Integer)
-    
+
     @staticmethod
     def insert_roles():
         roles = {
@@ -175,14 +175,10 @@ class Role(db.Model):
 
     def __repr__(self):
         return '<Role \'%s\'>' % self.name
-    
-
-       
 
 
 login_manager = LoginManager()
 login_manager.login_view = 'login'
-
 
 
 class AnonymousUser(AnonymousUserMixin):
@@ -191,7 +187,7 @@ class AnonymousUser(AnonymousUserMixin):
     def is_admin(self):
         return False
 
-#set AnonymousUser class as default login_manager anonymous user        
+#set AnonymousUser class as default login_manager anonymous user
 login_manager.anonymous_user = AnonymousUser
 
 @login_manager.user_loader
