@@ -1,6 +1,6 @@
 from flask import render_template, Response, redirect, session, request, url_for
 from app.auth.forms import LoginForm
-from app.auth.permission_required import permission_required, admin_required
+from app.auth.permission_required import permission_required
 from app.models import login_required
 
 
@@ -17,6 +17,7 @@ def login():
     return render_template('security/login_user.html', form=form)
     
 @home.route("/admin")
+@login_required
 @permission_required('admin')
 def admin():
     return render_template("admin.html")

@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, flash, request, Flask, cur
 from app.auth.forms import RegistrationForm, LoginForm
 from flask_login import login_user, login_required, current_user, logout_user
 from app.auth import auth
-from app.auth.permission_required import permission_required, admin_required
+from app.auth.permission_required import permission_required
 from app.models import db
 from app.models import User, Role
 
