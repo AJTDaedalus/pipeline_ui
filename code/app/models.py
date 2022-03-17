@@ -123,7 +123,18 @@ class Role(db.Model):
 login_manager = LoginManager()
 login_manager.login_view = 'login'
 
+<<<<<<< HEAD
+class AnonymousUser(AnonymousUserMixin):
+    def can(self, _):
+        return False
+    def is_admin(self):
+        return False
 
+#set AnonymousUser class as default login_manager anonymous user
+login_manager.anonymous_user = AnonymousUser
+=======
+
+>>>>>>> aee760d11e64fd7d5fdce99bfe35d84d90814782
 
 @login_manager.user_loader
 def load_user(user_id):

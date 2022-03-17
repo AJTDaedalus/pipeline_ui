@@ -33,7 +33,7 @@ def create_app(settings=DevelopmentSettings):
 
     with app.app_context():
         db.create_all()
-
+<<<<<<< HEAD
         #Test code below, please remove before production launch
         if not db.session.query(User).first():
             test_user = User(email='me123@gmail.com', first_name='Me', last_name='MEME', password="12345678")
