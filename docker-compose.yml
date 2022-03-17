@@ -28,6 +28,8 @@ services:
     networks:
       - backnet
       - frontnet
+    environment:
+      - FLASK_ENV=production
     expose:
       - 8000
     depends_on:
