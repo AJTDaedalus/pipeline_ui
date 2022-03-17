@@ -2,7 +2,7 @@ services:
   db:
     image: mariadb:10.6.4-focal
     command: '--default-authentication-plugin=mysql_native_password'
-    #restart: always
+    restart: always
     healthcheck:
       #contains password
       test: "/usr/bin/mysql --user=$$MYSQL_USER --password=$$MYSQL_PASSWORD --execute \"SHOW DATABASES;\""
@@ -24,17 +24,26 @@ services:
   app:
     build: ./
     command: gunicorn -w 1 -b 0.0.0.0:8000 wsgi:app
-    #restart: always
-    ports:
-      - 8000:8000
+    restart: always
     networks:
       - backnet
       - frontnet
     environment:
       - FLASK_ENV=production
+    expose:
+      - 8000
     depends_on:
       db:
         condition: service_healthy
+  proxy:
+    build: proxy
+    restart: always
+    ports:
+      - 80:80
+    depends_on:
+      - app
+    networks:
+      - frontnet
 volumes:
   db-data:
 networks:
