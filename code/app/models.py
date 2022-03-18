@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from flask_login import LoginManager
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy import ForeignKey
 
 login_manager = LoginManager()
 login_manager.login_view = 'login'

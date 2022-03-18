@@ -17,3 +17,6 @@ def admin():
 @home.route("/testpage")
 def testpage():
     return render_template("testpage.html")
+@home.route("/job")
+def jobpage():
+    return render_template("testpage.html")
