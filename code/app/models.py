@@ -8,8 +8,8 @@ from flask import Flask, flash, redirect, url_for, request, render_template, Res
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, AnonymousUserMixin
 from flask_login import LoginManager, current_user, login_required, login_user
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from itsdangerous import BadSignature, SignatureExpired
+#from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+#from itsdangerous import BadSignature, SignatureExpired
 from werkzeug.security import check_password_hash, generate_password_hash
 from sqlalchemy import Table, ForeignKey, Column, Integer
 from sqlalchemy.orm import relationship
@@ -47,6 +47,10 @@ class User(UserMixin, db.Model):
     def full_name(self):
         return '%s %s' % (self.first_name, self.last_name)
 
+    def can(self, permission):
+        if any(r for r in current_user.roles if r.name==permission):
+           return True
+           
     @property
     def password(self):
         raise AttributeError('`password` is not a readable attribute')
@@ -104,7 +108,7 @@ class Role(db.Model):
             'Placeholder2': ('placeholder2', False),
             'Administrator': (
                 'admin',
-                False  # grants all permissions
+                False
             )
         }
         for r in roles:
@@ -123,18 +127,12 @@ class Role(db.Model):
 login_manager = LoginManager()
 login_manager.login_view = 'login'
 
-<<<<<<< HEAD
 class AnonymousUser(AnonymousUserMixin):
     def can(self, _):
         return False
-    def is_admin(self):
-        return False
 
-#set AnonymousUser class as default login_manager anonymous user
+
 login_manager.anonymous_user = AnonymousUser
-=======
-
->>>>>>> aee760d11e64fd7d5fdce99bfe35d84d90814782
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -147,6 +145,3 @@ def unauthorized():
     Response("You must be logged in to view that page."),
     401,
     )
-
-
-
