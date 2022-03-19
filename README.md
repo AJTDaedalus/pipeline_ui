@@ -20,13 +20,11 @@
 [![Contributors][contributors-shield]][contributors-url]
 
 <!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://github.com/AJTDaedalus/pipeline_ui">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
-<h3 align="center">Pipeline UI</h3>
-</div>
+## Pipeline UI
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/98370207/158001923-83de168b-587f-43df-bd8c-4abfe016c5b0.png" width="300" height="300">
+  </p>  
+<br /><br />
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -41,7 +39,8 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Requirements</a></li>
+        <li><a href="#deployment">Deployment</a></li>
+        <li><a href="#requirements">Requirements</a></li>
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
@@ -68,9 +67,34 @@ This project is in support of their growing bioinformatics infrastructure that s
 
 <!-- GETTING STARTED -->
 ## Getting Started
+### Deployment
 
-TBD - when instructions are available
+#### Dependencies
 
+- Docker
+- Python 3.7 environment
+- Docker-Compose
+
+#### Deployment Settings:
+- Change secret key/password
+
+#### Docker Compose Commands:
+- `server up`
+- `server down`
+- `up --build` (rebuild with changes)
+
+#### Customization
+ ##### Adding new pages/functions:
+  - Copying and editing blueprints
+  - Adding to Navbar
+  - Adding access roles
+  - Adding new models
+  - Initializing blueprint in factory
+
+#### Deploying changes to production:
+  - Flask migrate explanation
+  - `docker compose up --build` reminder
+  
 ### Requirements
 ```
 pip install -r Requirements.txt

@@ -43,14 +43,13 @@ class User(UserMixin, db.Model):
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
 
-
     def full_name(self):
         return '%s %s' % (self.first_name, self.last_name)
 
     def can(self, permission):
         if any(r for r in current_user.roles if r.name==permission):
            return True
-           
+
     @property
     def password(self):
         raise AttributeError('`password` is not a readable attribute')
@@ -61,35 +60,6 @@ class User(UserMixin, db.Model):
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
-
-    #def generate_confirmation_token(self, expiration=604800):
-    #    """Generate a confirmation token to email a new user."""
-
-    #    s = Serializer(current_app.config['SECRET_KEY'], expiration)
-    #    return s.dumps({'confirm': self.id})
-
-
-    #def generate_password_reset_token(self, expiration=3600):
-    #    """
-    #    Generate a password reset change token to email to an existing user.
-    #    """
-    #    s = Serializer(current_app.config['SECRET_KEY'], expiration)
-    #    return s.dumps({'reset': self.id})
-
-
-    #def reset_password(self, token, new_password):
-    #    """Verify the new password for this user."""
-    #    s = Serializer(current_app.config['SECRET_KEY'])
-    #    try:
-    #        data = s.loads(token)
-    #    except (BadSignature, SignatureExpired):
-    #        return False
-    #    if data.get('reset') != self.id:
-    #        return False
-    #    self.password = new_password
-    #    db.session.add(self)
-    #    db.session.commit()
-    #    return True
 
     def __repr__(self):
         return '<User \'%s\'>' % self.full_name()
@@ -145,3 +115,21 @@ def unauthorized():
     Response("You must be logged in to view that page."),
     401,
     )
+
+# The home page should have 5 tabs, each capable of performing some type of request handling
+# the data for each tab will be stored in the RequestDetails tables
+
+class RequestDetails(db.Model):
+    Id = db.Column(db.Integer, primary_key=True)
+    requestData = db.Column(db.CHAR(None), unique=False, nullable=True)
+    status = db.Column(db.String(20), unique=False, nullable=True)
+    createDate = db.Column(db.DateTime, unique=False, nullable=False)
+    userId = db.Column(db.Integer, unique=False, nullable=False)
+    errorMessage = db.Column(db.String(100), unique=False, nullable=False)
+
+    def __init__(self, requestData, status, createDate, userId, errorMessage):
+        self.requestData = requestData
+        self.status = status
+        self.createDate = createDate
+        self.userId = userId
+        self.errorMessage = errorMessage

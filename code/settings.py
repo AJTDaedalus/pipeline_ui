@@ -24,3 +24,9 @@ class DevelopmentSettings(Config):
     SECRET_KEY = 'Thisismykeyitisverysecret'
     SECURITY_PASSWORD_SALT = 'TEMPORARYSALTYSALT'
     #SQLALCHEMY_ECHO = True
+
+class ProductionSettings(Config):
+    DEBUG = False
+    SQLALCHEMY_DATABASE_URI = 'mariadb+mysqlconnector://pipeline:pipeline123@db/pipeline_ui'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SECRET_KEY = 'Thisismykeyitisverysecret'
