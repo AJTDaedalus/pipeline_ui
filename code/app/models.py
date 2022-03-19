@@ -4,7 +4,8 @@ taken from https://github.com/hack4impact/flask-base/blob/master/app/models/user
 
 '''
 
-from flask import Flask, flash, redirect, url_for, request, render_template, Response, current_app
+from flask import Flask, flash, redirect, url_for, request, render_template, \
+                  Response, current_app
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, AnonymousUserMixin
 from flask_login import LoginManager, current_user, login_required, login_user
