@@ -43,3 +43,7 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[InputRequired()])
     remember_me = BooleanField('Keep me logged in')
     submit = SubmitField('Log in')
+
+class RoleForm(FlaskForm):
+    name = StringField('Role name', validators=[InputRequired(), length(1,64)])
+
