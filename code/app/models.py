@@ -50,6 +50,16 @@ class User(UserMixin, db.Model):
         if any(r for r in current_user.roles if r.name==permission):
            return True
 
+    def assign_role(self, role):
+        if self not in User.query.filter(User.roles.any(name=role)).all():
+            assignment = Role.query.filter(Role.name == role).first()
+            self.roles.append(assignment)
+            db.session.add(self)
+            db.session.commit()
+            flash('Role granted successfully.','success')
+        else:
+            flash('Role already granted.', 'error')
+
     @property
     def password(self):
         raise AttributeError('`password` is not a readable attribute')
@@ -92,6 +102,17 @@ class Role(db.Model):
 
     def __repr__(self):
         return '<Role \'%s\'>' % self.name
+
+    def create_role(role):
+        db_role = Role.query.filter_by(name=role).first()
+        if db_role:
+            flash('Role already exists','error')
+        else:
+            new_role = Role(name=role)
+            new_role.index = role
+            new_role.default = False
+            db.session.add(new_role)
+            db.session.commit()
 
 
 login_manager = LoginManager()
