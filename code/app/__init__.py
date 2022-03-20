@@ -4,11 +4,12 @@ App initialization file
 '''
 
 import os
+import datetime
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from settings import DevelopmentSettings, ProductionSettings
 from app.models import db
-from app.models import login_manager, User, Role
+from app.models import login_manager, User, Role, Job
 from flask_login import current_user, login_required
 from flask_wtf.csrf import CSRFProtect
 
@@ -50,6 +51,55 @@ def create_app(settings=settings):
             print (test_user.roles)
             db.session.add(test_user)
             db.session.commit()
+
+        if not db.session.query(Job).first():
+            user=User.query.filter_by(email='me123@gmail.com').first()
+            test_job1 = Job(JobID=1,
+                            JobName="Job 1",
+                            DateSubmit=datetime.datetime.now(),
+                            DateStart=None,
+                            DateEnd=None,
+                            Status="Pending",
+                            user=user
+            )
+            test_job2 = Job(JobID=2,
+                            JobName="Job 2",
+                            DateSubmit=datetime.datetime.now(),
+                            DateStart=datetime.datetime.now(),
+                            DateEnd=None,
+                            Status="Running",
+                            user=user
+            )
+            test_job3 = Job(JobID=3,
+                            JobName="Job 3",
+                            DateSubmit=datetime.datetime.now(),
+                            DateStart=datetime.datetime.now(),
+                            DateEnd=datetime.datetime.now(),
+                            Status="Complete",
+                            user=user
+            )
+            test_job4 = Job(JobID=4,
+                            JobName="Job 4",
+                            DateSubmit=datetime.datetime.now(),
+                            DateStart=datetime.datetime.now(),
+                            DateEnd=datetime.datetime.now(),
+                            Status="Fail",
+                            user=user
+            )
+            test_job5 = Job(JobID=5,
+                            JobName="Job 5",
+                            DateSubmit=datetime.datetime.now(),
+                            DateStart=datetime.datetime.now(),
+                            DateEnd=datetime.datetime.now(),
+                            Status="Unknown",
+                            user=user
+            )
+            db.session.add(test_job1)
+            db.session.add(test_job2)
+            db.session.add(test_job3)
+            db.session.add(test_job4)
+            db.session.add(test_job5)
+            db.session.commit()
+
         #Test code above, please remove before production launch
         return app
-

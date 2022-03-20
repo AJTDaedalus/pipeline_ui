@@ -141,6 +141,6 @@ class Job(db.Model):
     DateStart = db.Column(db.DateTime, unique=False, nullable=True)
     DateEnd = db.Column(db.DateTime, unique=False, nullable=True)
     Status = db.Column(db.String(255), unique=False, nullable=False)
-    UserID = db.Column(db.Integer, ForeignKey("User.id", ondelete="CASCADE"))
+    UserID = db.Column(db.Integer, ForeignKey("users.id", ondelete="CASCADE"))
 
-    user = relationship('User', foreign_keys='Job.UserID')        
+    user = relationship('User', foreign_keys='Job.UserID')
