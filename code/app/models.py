@@ -8,6 +8,7 @@ from flask_login import UserMixin
 from flask_login import LoginManager
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
 
 login_manager = LoginManager()
 login_manager.login_view = 'login'
@@ -68,3 +69,5 @@ class Job(db.Model):
     DateEnd = db.Column(db.DateTime, unique=False, nullable=True)
     Status = db.Column(db.String(255), unique=False, nullable=False)
     UserID = db.Column(db.Integer, ForeignKey("User.id", ondelete="CASCADE"))
+
+    user = relationship('User', foreign_keys='Job.UserID')

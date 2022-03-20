@@ -10,7 +10,7 @@
       <th scope="col">Start Date</th>
       <th scope="col">End Date</th>
       <th scope="col">Job Status</th>
-      <th scope="col">User ID</th>
+      <th scope="col">User</th>
     </tr>
   </thead>
   <tbody>
@@ -22,7 +22,7 @@
     {% elif job.Status=="Complete" %}
     <tr class="table-success">
     {% elif job.Status=="Fail" %}
-    <tr class="table-danger">  
+    <tr class="table-danger">
     {% else %}
     <tr>
     {% endif %}
@@ -32,7 +32,7 @@
       <td>{{job.DateStart}}</td>
       <td>{{job.DateEnd}}</td>
       <td>{{job.Status}}</td>
-      <td>{{job.UserID}}</td>
+      <td>{{job.user.email}}</td>
     </tr>
     {% endfor %}
   </tbody>
