@@ -19,4 +19,4 @@ def testpage():
     return render_template("testpage.html")
 @home.route("/job")
 def jobpage():
-    return render_template("testpage.html")
+    return render_template("jobpage.html")
