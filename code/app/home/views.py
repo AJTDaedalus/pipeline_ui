@@ -1,6 +1,6 @@
-from flask import render_template
+from flask import render_template, current_app
 from app.auth.forms import LoginForm
-
+from app.models import Job
 #Import blueprint
 from app.home import home
 
@@ -19,4 +19,6 @@ def testpage():
     return render_template("testpage.html")
 @home.route("/job")
 def jobpage():
-    return render_template("jobpage.html")
+    joblist=Job.query.all()
+    current_app.logger.error('Job list is ' + str(len(joblist)))
+    return render_template("jobpage.html", joblist=joblist)

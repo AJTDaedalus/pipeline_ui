@@ -60,11 +60,11 @@ class RequestDetails(db.Model):
         self.userId = userId
         self.errorMessage = errorMessage
 
-class Display(db.Model):
+class Job(db.Model):
     JobID = db.Column(db.Integer, primary_key=True)
     JobName = db.Column(db.String(255), unique=True, nullable=False)
     DateSubmit = db.Column(db.DateTime, unique=False, nullable=False)
-    DataStart = db.Column(db.DateTime, unique=False, nullable=True)
-    DataEnd = db.Column(db.DateTime, unique=False, nullable=True)
+    DateStart = db.Column(db.DateTime, unique=False, nullable=True)
+    DateEnd = db.Column(db.DateTime, unique=False, nullable=True)
     Status = db.Column(db.String(255), unique=False, nullable=False)
     UserID = db.Column(db.Integer, ForeignKey("User.id", ondelete="CASCADE"))
