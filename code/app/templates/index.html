@@ -4,11 +4,12 @@
 <div class="boxed">
 
 {% if current_user.is_authenticated %}
-    <h1> Hi, {{ current_user.username }} </h1> <br>
+    <h1> Hi, {{ current_user.email }} </h1>
    
     <p1 style="text-align:center">
 
     Welcome to Bioinformatics Pipeline UI. This is your starting point for requests. </p1>
+
 {% else %}
     <h1> No current user is logged in </h1>
     <h1 style = "text-align:center; font-size:1.2em;color: rgb(87, 149, 219);"><a href="{{ url_for('auth.login') }}"> Log In</a></h1>
@@ -17,9 +18,6 @@
 
 
 </div>
-
-
-
 
 
 {% endblock %}

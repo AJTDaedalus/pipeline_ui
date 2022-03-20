@@ -1,22 +1,27 @@
+from flask import render_template, redirect, url_for, flash, request, Flask, current_app, session
+from app.auth.forms import RegistrationForm, LoginForm
+from flask_login import login_user, login_required, current_user, logout_user
 from unittest import TextTestResult
-from flask import render_template, redirect, url_for, flash, request
 from app.models import db
-from app.auth.forms import RegistrationForm
 from app.auth.forms import LoginForm
 from app.models import User
 from app.auth import auth
-from flask_login import (login_user, login_required, current_user, logout_user)
+from app.auth.permission_required import permission_required
+from app.models import db
+from app.models import User, Role
+
 
 #registration route
-@auth.route('/register', methods=['GET', 'POST'])
+@auth.route('/register', methods=['GET','POST'])
 def register():
     form = RegistrationForm()
-    password=form.password.data
-    SpecialSym="*?!'^+%&/()=}][{$#"
+    Role.insert_roles()
     if form.validate_on_submit():
-        if User.query.filter_by(username=form.username.data.lower()).first():
-            flash('User already exists.', 'error')
-            return redirect(url_for('auth.register'))
+        if User.query.filter_by(email=form.email.data.lower()).first():
+            flash('User already exists.', category='error')
+            return redirect(url_for('home.index'))
+        password=form.password.data
+        SpecialSym="*?!'^+%&/()=}][{$#"
         if len(password) < 8:
             flash('Password too short. Must be 8 characters','error')
             return redirect(url_for('auth.register'))
@@ -28,17 +33,19 @@ def register():
             return redirect(url_for('auth.register'))
         if not any(char in SpecialSym for char in password):
             flash('Password must include at least one special character.','error')
-            return redirect(url_for('auth.register'))   
-     
+            return redirect(url_for('auth.register'))
+
         else:
-            user = User(username=form.username.data.lower(),
-                        email=form.email.data)
-            user.set_password(form.password.data)
+            user = User(
+                first_name=form.first_name.data,
+                last_name=form.last_name.data,
+                email=form.email.data,
+                password=form.password.data)
             db.session.add(user)
             db.session.commit()
             flash('Congratulations, you are now a registered user!', 'success')
             return redirect(url_for('home.index'))
-    return render_template('registration.html', title='Register', form=form)
+    return render_template('security/register_user.html', title='Register', form=form)
 
 
 
@@ -49,17 +56,16 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username =
-                                    form.username.data.lower()).first()
-        if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password', 'error')
-            return redirect(url_for('home.index'))
-        login_user(user, remember=form.remember_me.data)
-        next_page = request.args.get('next')
-        if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('home.index')
-        return redirect(next_page)
-    return render_template('login.html', title='Sign In', form=form)
+
+        user = User.query.filter_by(email=form.email.data).first()
+        if user is not None and user.password_hash is not None and \
+                user.verify_password(form.password.data):
+            login_user(user, form.remember_me.data)
+            flash('You are now logged in. Welcome back!', 'success')
+            return redirect(request.args.get('next') or url_for('home.index'))
+        else:
+            flash('Invalid email or password.', 'error')
+    return render_template('security/login_user.html', form=form)
 
 #logout route
 @auth.route("/logout")
