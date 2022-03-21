@@ -6,6 +6,7 @@ App initialization file
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from settings import DevelopmentSettings, ProductionSettings
 from app.models import db
 from app.models import login_manager, User, Role
@@ -19,12 +20,14 @@ if os.environ.get("FLASK_ENV") == 'production':
 else:
     settings = DevelopmentSettings
 
+
 def create_app(settings=settings):
     app = Flask(__name__)
     app.config.from_object(settings)
 
     db.init_app(app)
     login_manager.init_app(app)
+    migrate = Migrate(app, db)
 
     from app.home import home as home_bp
     from app.auth import auth as auth_bp
