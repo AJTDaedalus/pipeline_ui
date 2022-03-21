@@ -73,3 +73,56 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('home.index'))
+
+@auth.route('/confirm-account/<token>')
+@login_required
+def confirm(token):
+    """Confirm new user's account with provided token."""
+    print(token)
+    try:
+        email = confirm_account(token)
+    except:
+        flash('The confirmation link is invalid or expired', 'error')
+    user= User.query.filter_by(email=email).first_or_404()
+    if user.confirmed:
+        return redirect(url_for('home.index'))    
+    else:
+        user.confirmed = True
+        db.session.add(user)
+        db.session.commit()
+        flash('You have confirmed your account. Thanks!', 'success')
+    return redirect(url_for('home.index'))
+
+@auth.route('/confirm-account')
+@login_required
+def confirm_request():
+    """Respond to new user's request to confirm their account."""
+    token = current_user.generate_confirmation_token()
+    confirm_link = url_for('account.confirm', token=token, _external=True)
+    send_email(
+        recipient=current_user.email,
+        subject='Confirm Your Account',
+        template='email/confirm',
+        # current_user is a LocalProxy, we want the underlying user object
+        user=current_user._get_current_object(),
+        confirm_link=confirm_link)
+    flash('A new confirmation link has been sent to {}.'.format(
+        current_user.email), 'warning')
+    return redirect(url_for('main.index'))
+    
+@auth.before_app_request
+def before_request():
+    """Force user to confirm email before accessing login-required routes."""
+    if current_user.is_authenticated \
+            and not current_user.confirmed \
+            and request.blueprint != 'auth.'\
+            and request.endpoint != 'static':
+        return redirect(url_for('auth.unconfirmed'))
+
+
+@auth.route('/unconfirmed')
+def unconfirmed():
+    """Catch users with unconfirmed emails."""
+    if current_user.is_anonymous or current_user.confirmed:
+        return redirect(url_for('home.index'))
+    return render_template('security/unconfirmed.html')
