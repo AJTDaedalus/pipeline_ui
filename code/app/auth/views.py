@@ -84,24 +84,17 @@ def logout():
     return redirect(url_for('home.index'))
 
 @auth.route('/confirm-account/<token>')
-#@login_required
+@login_required
 def confirm(token):
     """Confirm new user's account with provided token."""
     print(token)
-    try:
-        s = Serializer(app.config['SECRET_KEY'])
-        email = s.loads(token, salt='email-confirm')
-    except:
-        flash('The confirmation link is invalid or expired', 'error')
-        return redirect(url_for('auth.login'))
-    user= User.query.filter_by(email=email).first_or_404()
-    if user.confirmed:
-        return redirect(url_for('home.index'))    
-    else:
-        user.confirmed = True
-        db.session.add(user)
+    if current_user.confirmed:
+        return redirect(url_for('home.index'))
+    if current_user.confirm_account(token):
         db.session.commit()
-        flash('You have confirmed your account. Thanks!', 'success')
+        flash ('You have confirmed your account', 'success')
+    else:
+        flash('The confirmation link is invalid or expired.')
     return redirect(url_for('home.index'))
 
 @auth.route('/confirm-account')

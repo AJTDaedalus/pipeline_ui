@@ -66,17 +66,15 @@ class User(UserMixin, db.Model):
         s = Serializer(current_app.config['SECRET_KEY'], salt='email-confirm')
         return s.dumps(self.id)
 
-    def confirm_account(self, token, expiration=3600):
+    def confirm_account(self, token):
         """Verify that the provided token is for this user's id."""
         print ("CONFIRM_ACCOUNT HAS BEEN CALLED")
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
-            email = s.loads(token, salt='email-confirm', max_age=expiration)
+            email = s.loads(token, salt='email-confirm', max_age=300)
             print (token)
         except (BadSignature, SignatureExpired):
             return False
-        #if email.get('confirm') != self.id:
-        #    return False
         
         self.confirmed = True
         db.session.add(self)
