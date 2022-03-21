@@ -71,7 +71,7 @@ class User(UserMixin, db.Model):
         print ("CONFIRM_ACCOUNT HAS BEEN CALLED")
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
-            email = s.loads(token, salt='email-confirm', max_age=300)
+            email = s.loads(token, salt='email-confirm', max_age=60)
             print (token)
         except (BadSignature, SignatureExpired):
             return False
@@ -120,6 +120,8 @@ login_manager.login_view = 'login'
 class AnonymousUser(AnonymousUserMixin):
     def can(self, _):
         return False
+    def confirmed(self):
+        return False
 
 
 login_manager.anonymous_user = AnonymousUser
@@ -132,8 +134,7 @@ def load_user(user_id):
 @login_manager.unauthorized_handler
 def unauthorized():
     return(
-    Response("You must be logged in to view that page."),
-    401,
+    redirect(url_for('auth.login'))
     )
 
 # The home page should have 5 tabs, each capable of performing some type of request handling
