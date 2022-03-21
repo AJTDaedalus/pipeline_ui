@@ -7,7 +7,7 @@ from app.auth.forms import LoginForm
 from app.auth import auth
 from app.auth.permission_required import permission_required
 from app.models import db
-from app.models import User, Role
+from app.models import User, Role, Serializer
 from app.email import send_email
 
 
@@ -40,7 +40,8 @@ def register():
                 first_name=form.first_name.data,
                 last_name=form.last_name.data,
                 email=form.email.data,
-                password=form.password.data)
+                password=form.password.data,
+                confirmed=False)
             db.session.add(user)
             db.session.commit()
             token = user.generate_confirmation_token()
@@ -88,9 +89,11 @@ def confirm(token):
     """Confirm new user's account with provided token."""
     print(token)
     try:
-        email = confirm_account(token)
+        s = Serializer(app.config['SECRET_KEY'])
+        email = s.loads(token, salt='email-confirm')
     except:
         flash('The confirmation link is invalid or expired', 'error')
+        return redirect(url_for('auth.login'))
     user= User.query.filter_by(email=email).first_or_404()
     if user.confirmed:
         return redirect(url_for('home.index'))    
@@ -106,7 +109,7 @@ def confirm(token):
 def confirm_request():
     """Respond to new user's request to confirm their account."""
     token = current_user.generate_confirmation_token()
-    confirm_link = url_for('account.confirm', token=token, _external=True)
+    confirm_link = url_for('auth.confirm', token=token, _external=True)
     send_email(
         recipient=current_user.email,
         subject='Confirm Your Account',
@@ -116,21 +119,21 @@ def confirm_request():
         confirm_link=confirm_link)
     flash('A new confirmation link has been sent to {}.'.format(
         current_user.email), 'warning')
-    return redirect(url_for('main.index'))
+    return redirect(url_for('home.index'))
     
-#@auth.before_app_request
-#def before_request():
-#    """Force user to confirm email before accessing login-required routes."""
-#    if current_user.is_authenticated \
-#            and not current_user.confirmed \
-#            and request.blueprint != 'auth.'\
-#            and request.endpoint != 'static':
-#        return redirect(url_for('auth.unconfirmed'))
+@auth.before_app_request
+def before_request():
+    """Force user to confirm email before accessing login-required routes."""
+    if current_user.is_authenticated \
+            and not current_user.confirmed \
+            and request.blueprint != 'auth'\
+            and request.endpoint != 'static':
+        return redirect(url_for('auth.unconfirmed'))
 
 
 @auth.route('/unconfirmed')
 def unconfirmed():
     """Catch users with unconfirmed emails."""
-    if current_user.is_anonymous or current_user.confirmed:
+    if current_user.confirmed:
         return redirect(url_for('home.index'))
     return render_template('security/unconfirmed.html')

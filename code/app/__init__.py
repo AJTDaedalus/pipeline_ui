@@ -51,7 +51,8 @@ def create_app(settings=settings):
         if not db.session.query(User).first():
             test_user = User(email='me123@gmail.com',
                              first_name='Me', last_name='MEME',
-                             password="12345678")
+                             password="12345678",
+                             confirmed=True)
             #test_role = Role(name='test')
             test_user.roles.append(Role(name='admin'))
             test_user.roles.append(Role(name='Placeholder1'))
