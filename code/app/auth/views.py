@@ -4,11 +4,11 @@ from flask_login import login_user, login_required, current_user, logout_user
 from unittest import TextTestResult
 from app.models import db
 from app.auth.forms import LoginForm
-from app.models import User
 from app.auth import auth
 from app.auth.permission_required import permission_required
 from app.models import db
 from app.models import User, Role
+from app.email import send_email
 
 
 #registration route
@@ -43,7 +43,15 @@ def register():
                 password=form.password.data)
             db.session.add(user)
             db.session.commit()
-            flash('Congratulations, you are now a registered user!', 'success')
+            token = user.generate_confirmation_token()
+            confirm_link = url_for('auth.confirm', token=token, _external=True)
+            send_email(
+                recipient=user.email,
+                subject='Confirm Your Account',
+                template='email/confirm',
+                user=user,
+                confirm_link=confirm_link)
+            flash('A confirmation link has been sent to {}!'.format(user.email), 'warning')
             return redirect(url_for('home.index'))
     return render_template('security/register_user.html', title='Register', form=form)
 
@@ -75,7 +83,7 @@ def logout():
     return redirect(url_for('home.index'))
 
 @auth.route('/confirm-account/<token>')
-@login_required
+#@login_required
 def confirm(token):
     """Confirm new user's account with provided token."""
     print(token)
@@ -110,14 +118,14 @@ def confirm_request():
         current_user.email), 'warning')
     return redirect(url_for('main.index'))
     
-@auth.before_app_request
-def before_request():
-    """Force user to confirm email before accessing login-required routes."""
-    if current_user.is_authenticated \
-            and not current_user.confirmed \
-            and request.blueprint != 'auth.'\
-            and request.endpoint != 'static':
-        return redirect(url_for('auth.unconfirmed'))
+#@auth.before_app_request
+#def before_request():
+#    """Force user to confirm email before accessing login-required routes."""
+#    if current_user.is_authenticated \
+#            and not current_user.confirmed \
+#            and request.blueprint != 'auth.'\
+#            and request.endpoint != 'static':
+#        return redirect(url_for('auth.unconfirmed'))
 
 
 @auth.route('/unconfirmed')

@@ -8,8 +8,8 @@ from flask import Flask, flash, redirect, url_for, request, render_template, Res
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, AnonymousUserMixin
 from flask_login import LoginManager, current_user, login_required, login_user
-#from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-#from itsdangerous import BadSignature, SignatureExpired
+from itsdangerous import URLSafeTimedSerializer as Serializer
+from itsdangerous import BadSignature, SignatureExpired
 from werkzeug.security import check_password_hash, generate_password_hash
 from sqlalchemy import Table, ForeignKey, Column, Integer
 from sqlalchemy.orm import relationship
@@ -77,7 +77,7 @@ class User(UserMixin, db.Model):
             print (token)
         except (BadSignature, SignatureExpired):
             return False
-        if data.get('confirm') != self.id:
+        if email.get('confirm') != self.id:
             return False
         
         self.confirmed = True
