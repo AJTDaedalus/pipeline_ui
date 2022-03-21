@@ -1,5 +1,14 @@
 {% extends "base.html" %}
 {% block title %}Admin Page{% endblock %}
 {% block page_content %}
-<p style="text-align:center">Admin page: admin users only</p>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <form action="" method = "POST" style="text-align:center"> 
+      {{ form.hidden_tag() }}
+            {{ form.user }} <br>
+            {{ form.roles }} <br>
+            {{ form.submit }} <br>
+  </div>
+
 {% endblock %}

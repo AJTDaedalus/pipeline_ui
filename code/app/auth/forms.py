@@ -3,12 +3,16 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, \
                     EmailField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, \
                                InputRequired, Length, Regexp
-from app.models import User
+from wtforms_sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
+from app.models import User, Role
 from flask import url_for
 
 
 
 class RegistrationForm(FlaskForm):
+    """
+    Form for registering new users.
+    """
     first_name = StringField(
         'First name', validators=[InputRequired(),
                                   Length(1, 64)])
@@ -36,6 +40,9 @@ class RegistrationForm(FlaskForm):
                                   'log in instead?')
 
 class LoginForm(FlaskForm):
+    """
+    Form for logging in users.
+    """
     email = EmailField(
         'Email', validators=[InputRequired(),
                              Length(1, 64),
@@ -44,6 +51,21 @@ class LoginForm(FlaskForm):
     remember_me = BooleanField('Keep me logged in')
     submit = SubmitField('Log in')
 
-class RoleForm(FlaskForm):
-    name = StringField('Role name', validators=[InputRequired(), length(1,64)])
+class NewRoleForm(FlaskForm):
+    """
+    Form for creating new roles.
+    """
+    name = StringField('Role name', validators=[InputRequired(), Length(1,64)])
+    submit = SubmitField('Create new role')
 
+class AssignRoleForm(FlaskForm):
+    """
+    Form for assigning roles to users.
+    """
+    user = QuerySelectField('User',
+                            query_factory=lambda: User.query,
+                            get_label = 'email')
+    roles = QuerySelectMultipleField('Roles',
+                                     query_factory=lambda: Role.query,
+                                     get_label = 'name')
+    submit = SubmitField('Assign role to user')

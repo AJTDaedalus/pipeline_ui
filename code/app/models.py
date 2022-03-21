@@ -79,27 +79,6 @@ class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
-    index = db.Column(db.String(64))
-    default = db.Column(db.Boolean, default=False, index=True)
-
-    @staticmethod
-    def insert_roles():
-        roles = {
-            'Placeholder1': ('placeholder1', False),
-            'Placeholder2': ('placeholder2', False),
-            'Administrator': (
-                'admin',
-                False
-            )
-        }
-        for r in roles:
-            role = Role.query.filter_by(name=r).first()
-            if role is None:
-                role = Role(name=r)
-            role.index = roles[r][0]
-            role.default = roles[r][1]
-            db.session.add(role)
-        db.session.commit()
 
     def __repr__(self):
         return '<Role \'%s\'>' % self.name
@@ -110,8 +89,6 @@ class Role(db.Model):
             flash('Role already exists','error')
         else:
             new_role = Role(name=role)
-            new_role.index = role
-            new_role.default = False
             db.session.add(new_role)
             db.session.commit()
 
