@@ -35,10 +35,8 @@ class User(UserMixin, db.Model):
     last_name = db.Column(db.String(64), index=True)
     email = db.Column(db.String(64), index=True, unique=True)
     password_hash = db.Column(db.String(128))
-    roles = db.relationship(
-        "Role",
-        secondary=user_role,
-        )
+    roles = db.relationship("Role", secondary=user_role,
+                            back_populates="users")
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -56,9 +54,19 @@ class User(UserMixin, db.Model):
             self.roles.append(assignment)
             db.session.add(self)
             db.session.commit()
-            flash('Role granted successfully.','success')
+            flash('Role {} granted successfully.'.format(role),'success')
         else:
-            flash('Role already granted.', 'error')
+            flash('Role {} already granted.'.format(role), 'error')
+
+    def remove_role(self, role):
+        if self not in User.query.filter(User.roles.any(name=role)).all():
+            flash('User does not have role {}.'.format(role),'error')
+        else:
+            removal = Role.query.filter(Role.name == role).first()
+            self.roles.remove(removal)
+            db.session.add(self)
+            db.session.commit()
+            flash('Role {} removed.'.format(role), 'success')
 
     @property
     def password(self):
@@ -81,6 +89,7 @@ class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
+    users = relationship("User", secondary=user_role, back_populates="roles")
 
     def __repr__(self):
         return '<Role \'%s\'>' % self.name

@@ -16,13 +16,6 @@ def login():
     form = LoginForm()
     return render_template('security/login_user.html', form=form)
 
-@home.route("/admin", methods=['GET', 'POST'])
-@login_required
-@permission_required('admin')
-def admin():
-    form = AssignRoleForm()
-    return render_template("admin.html", form=form)
-
 @home.route("/testpage")
 @login_required
 def testpage():
