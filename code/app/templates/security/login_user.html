@@ -7,7 +7,7 @@
 {% extends "base.html" %}
 {% block title %}Login Page{% endblock %}
 {% block page_content %}
-<p style="text-align:center">Log in using your username and password</p>
+<p style="text-align:center">Log in using your email and password</p>
 <head>
     <title>Login Page</title>
 </head>
@@ -15,9 +15,9 @@
     <form action="" method="POST" style="text-align:center">
 	    {{ form.hidden_tag() }}
     <p>
-		{{ form.username.label }}<br>
-		{{ form.username(size=32) }}<br>
-		{% for error in form.username.errors %}
+		{{ form.email.label }}<br>
+		{{ form.email(size=64) }}<br>
+		{% for error in form.email.errors %}
 		<span style="color: red;">[{{ error }}]</span>
 		{% endfor %}
 	</p>
