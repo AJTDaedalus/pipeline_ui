@@ -16,14 +16,3 @@ def send_email(recipient, subject, template, **kwargs):
         msg.body = render_template(template + '.txt', **kwargs)
         msg.html = render_template(template + '.html', **kwargs)
         mail.send(msg)
-        
-def send_confirmation_email(user_email):
-    s = Serializer(current_app.config['SECRET_KEY'])
-    confirm_url = url_for(
-        'auth.confirm', token=s.dumps(user_email, salt='email-confirmation-salt'),
-        _external=True)
-    send_email(
-        [user_email],
-        'Confirm your Email Address',
-        render_template('email/confirm.html',
-            confirm_url=confirm_url))

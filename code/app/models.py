@@ -72,7 +72,6 @@ class User(UserMixin, db.Model):
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
             email = s.loads(token, salt='email-confirm', max_age=60)
-            print (token)
         except (BadSignature, SignatureExpired):
             return False
         

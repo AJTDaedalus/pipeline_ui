@@ -53,6 +53,7 @@ def register():
                 user=user,
                 confirm_link=confirm_link)
             flash('A confirmation link has been sent to {}!'.format(user.email), 'warning')
+            login_user(user)
             return redirect(url_for('home.index'))
     return render_template('security/register_user.html', title='Register', form=form)
 
@@ -87,7 +88,6 @@ def logout():
 @login_required
 def confirm(token):
     """Confirm new user's account with provided token."""
-    print(token)
     if current_user.confirmed:
         return redirect(url_for('home.index'))
     if current_user.confirm_account(token):
@@ -107,7 +107,6 @@ def confirm_request():
         recipient=current_user.email,
         subject='Confirm Your Account',
         template='email/confirm',
-        # current_user is a LocalProxy, we want the underlying user object
         user=current_user._get_current_object(),
         confirm_link=confirm_link)
     flash('A new confirmation link has been sent to {}.'.format(
