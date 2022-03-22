@@ -136,3 +136,14 @@ class RequestDetails(db.Model):
         self.userId = userId
         self.Output = Output
         self.errorMessage = errorMessage
+
+class Job(db.Model):
+    JobID = db.Column(db.Integer, primary_key=True)
+    JobName = db.Column(db.String(255), unique=True, nullable=False)
+    DateSubmit = db.Column(db.DateTime, unique=False, nullable=False)
+    DateStart = db.Column(db.DateTime, unique=False, nullable=True)
+    DateEnd = db.Column(db.DateTime, unique=False, nullable=True)
+    Status = db.Column(db.String(255), unique=False, nullable=False)
+    UserID = db.Column(db.Integer, ForeignKey("users.id", ondelete="CASCADE"))
+
+    user = relationship('User', foreign_keys='Job.UserID')
