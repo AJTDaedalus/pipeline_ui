@@ -27,6 +27,11 @@ def admin():
 def testpage():
     return render_template("testpage.html")
 
+@home.route("/account_confirmed")
+@login_required
+def account_confirmed():
+    return render_template("security/account_confirmed.html")
+
 @home.route("/permission_denied")
 def lacking_permission():
     return render_template("permission_denied.html")

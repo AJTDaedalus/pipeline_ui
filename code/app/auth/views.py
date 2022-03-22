@@ -95,7 +95,7 @@ def confirm(token):
         flash ('You have confirmed your account', 'success')
     else:
         flash('The confirmation link is invalid or expired.')
-    return redirect(url_for('home.index'))
+    return redirect(url_for('home.account_confirmed'))
 
 @auth.route('/confirm-account')
 @login_required

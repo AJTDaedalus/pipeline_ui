@@ -23,7 +23,7 @@ class DevelopmentSettings(Config):
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SECRET_KEY = 'Thisismykeyitisverysecret'
     SECURITY_PASSWORD_SALT = 'TEMPORARYSALTYSALT'
-    #SERVER_NAME =
+    SERVER_NAME = '10.0.0.135:8000'
 
 class ProductionSettings(Config):
     DEBUG = False
