@@ -1,8 +1,9 @@
-from flask import render_template, Response, redirect, session, request, url_for
+
+from flask import render_template, Response, redirect, session, request, url_for, current_app
 from app.auth.forms import LoginForm, AssignRoleForm
 from app.auth.permission_required import permission_required
 from app.models import login_required
-
+from app.models import Job
 
 #Import blueprint
 from app.home import home
@@ -29,3 +30,10 @@ def lacking_permission():
 def page_not_found(e):
     session['redirected_from'] = request.url
     return redirect(url_for("home.lacking_permission"))
+
+@login_required
+@home.route("/job")
+def jobpage():
+    joblist=Job.query.all()
+    current_app.logger.error('Job list is ' + str(len(joblist)))
+    return render_template("jobpage.html", joblist=joblist)
