@@ -68,9 +68,9 @@ def login():
     return render_template('security/login_user.html', form=form)
 
 #Admin route
+@auth.route('/admin', methods=['GET', 'POST'])
 @login_required
 @permission_required('admin')
-@auth.route('/admin', methods=['GET', 'POST'])
 def admin():
     nrole = NewRoleForm()
     if nrole.create.data and nrole.validate():
