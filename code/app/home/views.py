@@ -12,6 +12,11 @@ from werkzeug.utils import secure_filename
 #Import blueprint
 from app.home import home
 
+
+ALLOWED_EXTENSIONS = {'csv'}
+
+
+
 @home.route('/')
 def index():
     return render_template('index.html')
@@ -47,16 +52,38 @@ def jobpage():
 def success():
     return render_template("success.html")
 
+@home.route("/fail")
+def fail():
+    return render_template("fail.html")
+
+
 class UploadForm(FlaskForm):
     file = FileField()
+    
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 @home.route('/upload', methods=['GET', 'POST'])
 def upload():
     form = UploadForm()
-    
-    if form.validate_on_submit():
-        filename = secure_filename(form.file.data.filename)
-        form.file.data.save( filename)
-        return redirect(url_for('home.success'))
-
-    return render_template('upload.html', form=form)     
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return redirect(request.url)
+        file = request.files['file']
+        if file.filename == '':
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            form.file.data.save(filename)
+            return redirect(url_for('home.success'))
+        if not allowed_file(file.name):
+            return render_template('fail.html')
+        
+        #if form.validate_on_submit():
+        #filename = secure_filename(form.file.data.filename)
+        #form.file.data.save( filename)
+        #return redirect(url_for('home.success'))
+    return render_template('upload.html', form=form)
