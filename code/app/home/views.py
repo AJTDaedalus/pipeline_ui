@@ -8,6 +8,10 @@ import os
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField
 from werkzeug.utils import secure_filename
+from csv import DictWriter
+
+
+
 
 #Import blueprint
 from app.home import home
@@ -66,6 +70,24 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+
+def EditFile():
+    List=[6,3,2,1,4]
+    with open(file, 'a') as f_object:
+        writer_object = writer(f_object)
+        writer_object.writerow(List)
+        f_object.close()
+        file.data.save("02")
+
+
+
+@home.route('/return-files/')
+def return_files_tut():
+	try:
+		return send_file('C:/users/19786/Desktop/Pipeline_Ui/Code/anothertest.csv', attachment_filename='ReturnedFile.csv')
+	except Exception as e:
+		return str(e)
+
 @home.route('/upload', methods=['GET', 'POST'])
 def upload():
     form = UploadForm()
@@ -78,12 +100,22 @@ def upload():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             form.file.data.save(filename)
+            row = ['Add', 'these','results']
+            with open (filename,'a') as csvFile:
+                writer = csv.writer(csvFile)
+                csvFile.write("\n")
+                writer.writerow(row)
+            csvFile.close()
             return redirect(url_for('home.success'))
+        return_files_tut (filename)
+        EditFile(file)
         if not allowed_file(file.name):
             return render_template('fail.html')
+
         
         #if form.validate_on_submit():
         #filename = secure_filename(form.file.data.filename)
         #form.file.data.save( filename)
         #return redirect(url_for('home.success'))
+
     return render_template('upload.html', form=form)
