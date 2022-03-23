@@ -3,16 +3,16 @@
 {% block title %}File Uplaod Page{% endblock %}
 {% block content %}
 
-
-<title>Upload new File</title>
-<h1>Upload new File</h1>
-<form method=post enctype=multipart/form-data>
-  <input type=file name=file>
-  <input type=submit value=Upload>
+<html>
+<head>
+<title>Upload your file here</title>
+</head>
+<body>
+<form method="post" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    {{ form.file }}
+    <input type="submit">
 </form>
-'''
-
-
-<!doctype html>
+</body>
 </html>
 {% endblock %}

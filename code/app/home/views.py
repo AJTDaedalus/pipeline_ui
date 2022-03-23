@@ -5,7 +5,9 @@ from app.models import login_required
 from app.models import Job
 import csv
 import os
-
+from flask_wtf import FlaskForm
+from flask_wtf.file import FileField
+from werkzeug.utils import secure_filename
 
 #Import blueprint
 from app.home import home
@@ -40,20 +42,21 @@ def jobpage():
     current_app.logger.error('Job list is ' + str(len(joblist)))
     return render_template("jobpage.html", joblist=joblist)
 
-@home.route("/upload")
-def uploadpage():
-    UPLOAD_FOLDER = 'c:/user/19786/desktop/piplineui/code/app/static'
-    ALLOWED_EXTENSIONS = {'txt', 'csv'}
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            flash('No file part')
-            return render_template(upload.html)
-        file = request.files['file']
-        if file.filename == '':
-            flash('No selected file')
-            return render_template(upload.html)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('download_file', name=filename))
-    return render_template('upload.html')
+    
+@home.route("/success")
+def success():
+    return render_template("success.html")
+
+class UploadForm(FlaskForm):
+    file = FileField()
+
+@home.route('/upload', methods=['GET', 'POST'])
+def upload():
+    form = UploadForm()
+    
+    if form.validate_on_submit():
+        filename = secure_filename(form.file.data.filename)
+        form.file.data.save( filename)
+        return redirect(url_for('home.success'))
+
+    return render_template('upload.html', form=form)     
