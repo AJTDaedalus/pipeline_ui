@@ -32,10 +32,6 @@ def login():
     form = LoginForm()
     return render_template('security/login_user.html', form=form)
 
-@home.route("/testpage")
-@login_required
-def testpage():
-    return render_template("testpage.html")
 
 @home.route("/permission_denied")
 def lacking_permission():
@@ -54,13 +50,6 @@ def jobpage():
     return render_template("jobpage.html", joblist=joblist)
 
     
-@home.route("/success")
-def success():
-    return render_template("success.html")
-
-
-
-    
 @home.route("/fail")
 def fail():
     return render_template("fail.html")
@@ -76,17 +65,11 @@ def allowed_file(filename):
 
 
 
-#def EditFile():
-    List=[6,3,2,1,4]
-    with open(file, 'a') as f_object:
-        writer_object = writer(f_object)
-        writer_object.writerow(List)
-        f_object.close()
-        file.data.save("02")
-
 @home.route('/download')
 def download():
-     return send_file('lalala.csv', as_attachment=True)
+    return send_file('Testfile.csv', as_attachment=True)
+    
+
 
 
 @home.route('/upload', methods=['GET', 'POST'])
@@ -95,37 +78,25 @@ def upload():
     if request.method == 'POST':
         file = request.files['file']
         if 'file' not in request.files:
-            return render_template('home.fail')
+            return render_template('fail.html')
         if file.filename == '':
-            return render_template('home.fail')
+            return render_template('fail.html')
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             form.file.data.save(filename)
-            row = ['Result1', 'Result2','Result3','Result4']
+            row = ['Result1', 'Result2','Result3','Result4','Result5','Result6']
             with open (filename,'a') as csvFile:
                 writer = csv.writer(csvFile)
                 csvFile.write("\n")
                 writer.writerow(row)
             csvFile.close()
-            data = pandas.read_csv(filename, header=0) 
+            data = pandas.read_csv(filename, header=0, on_bad_lines='skip') 
             myData = data.values 
-            
-            return render_template('download.html') 
-            #return render_template('testpage.html', myData=myData) 
-
-
-            #return redirect(url_for('home.success'))
+            return render_template('download.html')
 
         if not allowed_file(file.name):
             return redirect(url_for('home.fail'))
-        #EditFile(file)
-
-        
-    
-        
-        #if form.validate_on_submit():
-        #filename = secure_filename(form.file.data.filename)
-        #form.file.data.save( filename)
-        #return redirect(url_for('home.success'))
 
     return render_template('upload.html', form=form)
+
+

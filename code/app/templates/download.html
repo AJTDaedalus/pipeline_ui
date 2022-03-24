@@ -1,3 +1,12 @@
+
+{% extends "base.html" %}
+{% block title %}Download Page{% endblock %}
+{% block page_content %}
+<p style="text-align:center">Successful Upload!<br>
+  There have been some changes made to your file. <br> Please download your updated file below:</p>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,6 +16,11 @@
     <title>File Downloader</title>
   </head>
   <body>
-    <a href="/download"><button class='btn btn-default'>Download</button></a>
+    <a href="/download"><button class='btn btn-default'>Updated File</button></a>
   </body>
 </html>
+
+
+
+
+{% endblock %}
