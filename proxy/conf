@@ -1,8 +1,10 @@
 server {
-    listen       80;
-    server_name  app;
-    location / {
-        proxy_pass   http://app:8000;
+    listen               80;
+	listen               587 ssl;
+    server_name          app;
+    location / {  
+        proxy_pass                http://app:8000;
+        proxy_set_header          Host 172.20.0.1;
     }
 
 }

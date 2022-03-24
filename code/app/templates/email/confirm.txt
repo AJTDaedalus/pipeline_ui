@@ -1,6 +1,6 @@
 Dear {{ user.full_name() }},
 
-Welcome to {{ config.APP_NAME }}!
+Welcome to The Bioinformatics Pipeline!
 
 To confirm your account, please click on the following link:
 
@@ -8,6 +8,6 @@ To confirm your account, please click on the following link:
 
 Sincerely,
 
-The {{ config.APP_NAME }} Team
+The Bioinformatics Team
 
 Note: replies to this email address are not monitored.

@@ -68,7 +68,6 @@ class User(UserMixin, db.Model):
 
     def confirm_account(self, token):
         """Verify that the provided token is for this user's id."""
-        print ("CONFIRM_ACCOUNT HAS BEEN CALLED")
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
             email = s.loads(token, salt='email-confirm', max_age=60)
