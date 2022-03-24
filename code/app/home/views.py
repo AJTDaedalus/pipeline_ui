@@ -1,4 +1,4 @@
-from flask import render_template, Response, redirect, session, request, flash, url_for, current_app
+from flask import render_template, Response, redirect, session, request, flash, url_for, current_app, send_file
 from app.auth.forms import LoginForm
 from app.auth.permission_required import permission_required
 from app.models import login_required
@@ -9,6 +9,8 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField
 from werkzeug.utils import secure_filename
 from csv import DictWriter
+from flask import send_file, send_from_directory, safe_join, abort
+import pandas
 
 
 
@@ -56,6 +58,9 @@ def jobpage():
 def success():
     return render_template("success.html")
 
+
+
+    
 @home.route("/fail")
 def fail():
     return render_template("fail.html")
@@ -71,7 +76,7 @@ def allowed_file(filename):
 
 
 
-def EditFile():
+#def EditFile():
     List=[6,3,2,1,4]
     with open(file, 'a') as f_object:
         writer_object = writer(f_object)
@@ -79,39 +84,44 @@ def EditFile():
         f_object.close()
         file.data.save("02")
 
+@home.route('/download')
+def download():
+     return send_file('lalala.csv', as_attachment=True)
 
-
-@home.route('/return-files/')
-def return_files_tut():
-	try:
-		return send_file('C:/users/19786/Desktop/Pipeline_Ui/Code/anothertest.csv', attachment_filename='ReturnedFile.csv')
-	except Exception as e:
-		return str(e)
 
 @home.route('/upload', methods=['GET', 'POST'])
 def upload():
     form = UploadForm()
     if request.method == 'POST':
-        if 'file' not in request.files:
-            return redirect(request.url)
         file = request.files['file']
+        if 'file' not in request.files:
+            return render_template('home.fail')
         if file.filename == '':
-            return redirect(request.url)
+            return render_template('home.fail')
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             form.file.data.save(filename)
-            row = ['Add', 'these','results']
+            row = ['Result1', 'Result2','Result3','Result4']
             with open (filename,'a') as csvFile:
                 writer = csv.writer(csvFile)
                 csvFile.write("\n")
                 writer.writerow(row)
             csvFile.close()
-            return redirect(url_for('home.success'))
-        return_files_tut (filename)
-        EditFile(file)
-        if not allowed_file(file.name):
-            return render_template('fail.html')
+            data = pandas.read_csv(filename, header=0) 
+            myData = data.values 
+            
+            return render_template('download.html') 
+            #return render_template('testpage.html', myData=myData) 
 
+
+            #return redirect(url_for('home.success'))
+
+        if not allowed_file(file.name):
+            return redirect(url_for('home.fail'))
+        #EditFile(file)
+
+        
+    
         
         #if form.validate_on_submit():
         #filename = secure_filename(form.file.data.filename)

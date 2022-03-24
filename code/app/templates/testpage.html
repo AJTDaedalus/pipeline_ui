@@ -1,6 +1,26 @@
 {% extends "base.html" %}
 {% block title %}Admin Page{% endblock %}
 {% block page_content %}
-<p style="text-align:center">Sarah's test page</p>
+<p style="text-align:center">Additions made to your file:</p>
+
+<table class="table table-striped table-sm"> 
+    <tbody> 
+      {% for value in myData%} 
+      <tr> 
+        <td>{{ value[0] }}</td> 
+        <td>{{ value[1] }}</td> 
+        <td>{{ value[2] }}</td> 
+        <td>{{ value[3] }}</td> 
+      </tr> 
+      {% endfor %} 
+    </tbody> 
+  </table> 
+ 
+  <link>
+  <td><a href="{{ url_for('static', filename='lalala.csv'  }}">{{x}}</a></td>
+</link>
+
+
+
 
 {% endblock %}
