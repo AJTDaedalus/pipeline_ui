@@ -45,6 +45,10 @@
                   <li class="nav-item">
                     <a class="nav-link" href="{{url_for('home.uploadpage')}}">File Upload</a>
                   </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('home.gccontent')}}">GC Content</a>
+                  </li>
+
 		{% endif %}
 
 		{% if current_user.can('Placeholder1') %}
