@@ -35,3 +35,8 @@ def lacking_permission():
 def page_not_found(e):
     session['redirected_from'] = request.url
     return redirect(url_for("home.lacking_permission"))
+
+## Use Get and POST method to get user input and send the result
+@home.route("/gccontent")
+def gccontent():
+    return render_template("gccontent.html")
