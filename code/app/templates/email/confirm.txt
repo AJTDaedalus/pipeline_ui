@@ -8,6 +8,6 @@ To confirm your account, please click on the following link:
 
 Sincerely,
 
-The Bioinformatics Team
+The Bioinformatics Pipeline UI Team
 
 Note: replies to this email address are not monitored.
