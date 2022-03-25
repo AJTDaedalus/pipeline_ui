@@ -1,7 +1,10 @@
-from flask import render_template, Response, redirect, session, request, url_for
+from flask import render_template, Response, redirect, session, request, flash, url_for, current_app
 from app.auth.forms import LoginForm
 from app.auth.permission_required import permission_required
 from app.models import login_required
+from app.models import Job
+import csv
+import os
 
 
 #Import blueprint
@@ -35,8 +38,3 @@ def lacking_permission():
 def page_not_found(e):
     session['redirected_from'] = request.url
     return redirect(url_for("home.lacking_permission"))
-
-## Use Get and POST method to get user input and send the result
-@home.route("/gccontent")
-def gccontent():
-    return render_template("gccontent.html")
