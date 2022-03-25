@@ -26,7 +26,7 @@ user_role = db.Table('user_role', db.Model.metadata,
 
 class User(UserMixin, db.Model):
     """
-    User class. Your Typical user class.
+    User class. Access to UI restricted by 'roles' and 'confirmed'.
     """
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -61,7 +61,7 @@ class User(UserMixin, db.Model):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
     
-    def generate_confirmation_token(self, expiration=604800):
+    def generate_confirmation_token(self, expiration=30800):
         """Generate a confirmation token to email a new user."""
         s = Serializer(current_app.config['SECRET_KEY'], salt='email-confirm')
         return s.dumps(self.id)
@@ -75,6 +75,27 @@ class User(UserMixin, db.Model):
             return False
         
         self.confirmed = True
+        db.session.add(self)
+        db.session.commit()
+        return True
+        
+    def generate_password_reset_token(self, expiration=3600):
+        """
+        Generate a password reset change token to email to an existing user.
+        """
+        s = Serializer(current_app.config['SECRET_KEY'], salt='pass-reset')
+        return s.dumps({'reset': self.id})
+    
+    def reset_password(self, token, new_password):
+        """Verify the new password for this user."""
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token, salt='pass-reset')
+        except (BadSignature, SignatureExpired):
+            return False
+        if data.get('reset') != self.id:
+            return False
+        self.password = new_password
         db.session.add(self)
         db.session.commit()
         return True

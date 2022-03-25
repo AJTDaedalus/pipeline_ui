@@ -11,11 +11,6 @@ from app.home import home
 def index():
     return render_template('index.html')
 
-@home.route("/login")
-def login():
-    form = LoginForm()
-    return render_template('security/login_user.html', form=form)
-
 @home.route("/admin")
 @login_required
 @permission_required('admin')

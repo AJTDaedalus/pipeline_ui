@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html></html>
+{% extends "base.html" %}
+{% block title %}Password Reset{% endblock %}
+{% block page_content %}
+<p style="text-align:center"> Provide Email to Reset Password</p><body>
+    <form action="" method="POST" style="text-align:center">
+	    {{ form.hidden_tag() }}
+    <p>
+		{{ form.email.label }}<br>
+		{{ form.email(size=64) }}<br>
+		{% for error in form.email.errors %}
+		<span style="color: red;">[{{ error }}]</span>
+		{% endfor %}
+	</p>
+    <p>{{ form.submit() }}</p>
+    </form>
+	<h3 style = "text-align:center; font-size:1.2em;color: rgb(87, 149, 219);"><a href="{{ url_for('auth.register') }}">Don't have an account yet? Register here</a></h3>
+</body>
+</html>
+{% endblock %}
