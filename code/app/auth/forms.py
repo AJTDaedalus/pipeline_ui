@@ -22,9 +22,9 @@ class RegistrationForm(FlaskForm):
     email = EmailField(
         'Email', validators=[InputRequired(),
                              Length(1, 64),
-                             Email(),
-                             Regexp('.+@eurofins-viracor.com$', flags=0,
-                                    message='Use company email')])
+                             Email()])
+                             #Regexp('.+@viracor-eurofins.com$', flags=0,
+                             #       message='Use company email')])
     password = PasswordField(
         'Password',
         validators=[
@@ -50,6 +50,37 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[InputRequired()])
     remember_me = BooleanField('Keep me logged in')
     submit = SubmitField('Log in')
+
+class RequestResetPasswordForm(FlaskForm):
+    email = EmailField(
+        'Email', validators=[InputRequired(),
+                             Length(1, 64),
+                             Email()])
+                             #Regexp('.+@viracor-eurofins.com$', flags=0,
+                             #       message='Use company email')])
+    submit = SubmitField('Reset password')
+
+class ResetPasswordForm(FlaskForm):
+    email = EmailField(
+        'Email', validators=[InputRequired(),
+                             Length(1, 64),
+                             Email()])
+                             #Regexp('.+@viracor-eurofins.com$', flags=0,
+                             #       message='Use company email')])
+    new_password = PasswordField(
+        'New password',
+        validators=[
+            InputRequired(),
+            EqualTo('new_password2', 'Passwords must match.')
+        ]
+    )
+    new_password2 = PasswordField(
+        'Confirm new password', validators=[InputRequired()])
+    submit = SubmitField('Reset password')
+
+    def validate_email(self, field):
+        if User.query.filter_by(email=field.data).first() is None:
+            raise ValidationError('Unknown email address.')
 
 class NewRoleForm(FlaskForm):
     """

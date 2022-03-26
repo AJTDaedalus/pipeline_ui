@@ -1,0 +1,13 @@
+Dear {{ user.full_name() }},
+
+Welcome to The Bioinformatics Pipeline!
+
+To confirm your account, please click on the following link:
+
+{{ confirm_link }}
+
+Sincerely,
+
+The Bioinformatics Pipeline UI Team
+
+Note: replies to this email address are not monitored.
