@@ -1,4 +1,5 @@
-from flask import render_template, Response, redirect, session, request, flash, url_for, current_app
+from flask import render_template, Response, redirect, session, request, \
+                  flash, url_for, current_app
 from app.auth.forms import LoginForm
 from app.auth.permission_required import permission_required
 from app.models import login_required
@@ -18,12 +19,6 @@ def index():
 def login():
     form = LoginForm()
     return render_template('security/login_user.html', form=form)
-
-@home.route("/admin")
-@login_required
-@permission_required('admin')
-def admin():
-    return render_template("admin.html")
 
 @home.route("/testpage")
 @login_required
@@ -67,4 +62,3 @@ def uploadpage():
 @home.route("/gccontent", methods=["GET", "POST"])
 def gccontent():
     return render_template("gccontent.html")
- 
