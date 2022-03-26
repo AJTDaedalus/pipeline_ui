@@ -67,6 +67,9 @@ def download():
     newFileName = 'job_' + todayDate + '.csv'
     return send_file('../test.csv', attachment_filename=newFileName, as_attachment=True)
     
+@home.route('/fail')
+def fail():
+   return render_template("fail.html")
 
 
 @home.route('/upload', methods=['GET', 'POST'])
@@ -82,12 +85,15 @@ def upload():
             filename = secure_filename('test.csv')
             form.file.data.save(filename)
             row = ['Result1', 'Result2','Result3','Result4','Result5','Result6']
-            with open (filename,'w') as csvFile:
+            with open (filename,'a') as csvFile:
                 writer = csv.writer(csvFile)
                 csvFile.write("\n")
                 writer.writerow(row)
             csvFile.close()
-            return render_template('download.html')
+            #return render_template('download.html')
+            data = pandas.read_csv(filename, header=0, on_bad_lines='skip')
+            print(data)
+            return redirect(url_for('home.download'))
 
         if not allowed_file(file.name):
             return redirect(url_for('home.fail'))
