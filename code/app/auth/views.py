@@ -5,7 +5,7 @@ from unittest import TextTestResult
 from app.auth import auth
 from app.auth.permission_required import permission_required
 from app.models import User, Role, Serializer, db
-from app.email import send_confirmation_email, send_password_email
+from app.email import send_email
 
 
 
@@ -44,7 +44,7 @@ def register():
             db.session.commit()
             token = user.generate_confirmation_token()
             confirm_link = url_for('auth.confirm', token=token, _external=True)
-            send_confirmation_email(
+            send_email(
                 recipient=user.email,
                 subject='Confirm Your Account',
                 template='email/confirm',
@@ -105,7 +105,7 @@ def confirm_request():
     """Generates token and sends confirmation link to current user's email"""
     token = current_user.generate_confirmation_token()
     confirm_link = url_for('auth.confirm', token=token, _external=True)
-    send_confirmation_email(
+    send_email(
         recipient=current_user.email,
         subject='Confirm Your Account',
         template='email/confirm',
@@ -129,7 +129,7 @@ def reset_password_request():
         if user is not None:
             token = user.generate_password_reset_token()
             reset_link = url_for('auth.reset_password', token=token, _external=True)
-            send_password_email(
+            send_email(
                 recipient = user.email,
                 subject = 'Reset Your Password',
                 template = 'email/reset_password',
