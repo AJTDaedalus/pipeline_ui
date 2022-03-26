@@ -78,7 +78,7 @@ class User(UserMixin, db.Model):
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
-    
+
     def generate_confirmation_token(self, expiration=30800):
         """Generate a confirmation token to email a new user."""
         s = Serializer(current_app.config['SECRET_KEY'], salt='email-confirm')
@@ -88,22 +88,22 @@ class User(UserMixin, db.Model):
         """Verify that the provided token is for this user's id."""
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
-            email = s.loads(token, salt='email-confirm', max_age=60)
+            email = s.loads(token, salt='email-confirm', max_age=600)
         except (BadSignature, SignatureExpired):
             return False
-        
+
         self.confirmed = True
         db.session.add(self)
         db.session.commit()
         return True
-        
+
     def generate_password_reset_token(self, expiration=3600):
         """
         Generate a password reset change token to email to an existing user.
         """
         s = Serializer(current_app.config['SECRET_KEY'], salt='pass-reset')
         return s.dumps({'reset': self.id})
-    
+
     def reset_password(self, token, new_password):
         """Verify the new password for this user."""
         s = Serializer(current_app.config['SECRET_KEY'])
@@ -117,7 +117,7 @@ class User(UserMixin, db.Model):
         db.session.add(self)
         db.session.commit()
         return True
-    
+
     def __repr__(self):
         return '<User \'%s\'>' % self.full_name()
 
