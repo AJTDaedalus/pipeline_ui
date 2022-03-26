@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Admin Page{% endblock %}
+{% block page_content %}
+
+<div class="form-wrapper">
+  <h2 class="title">Create New Role</h2>
+    <form id = "nrole" method = "POST" style="text-align:center"> 
+     {{ nrole.hidden_tag() }}
+      <fieldset class="form-field">
+	{{ nrole.name.label }} <br>
+        {{ nrole.name(form="nrole") }} <br>
+      <fieldset class="form-field">
+	{{ nrole.create.label }} <br>
+        {{ nrole.create(form="nrole") }} <br>
+    </form>
+</div>
+
+<hr>
+
+<div class="form-wrapper">
+  <h2 class="title">Assign Roles to User</h2>
+    <form id="assign" method = "POST" style="text-align:center"> 
+     {{ assign.hidden_tag() }}
+      <fieldset class="form-field">
+	{{ assign.user.label }} <br>
+        {{ assign.user(form="assign") }} <br>
+      <fieldset class="form-field">
+	{{ assign.new_roles.label }} <br>
+	{{ assign.new_roles(form="assign") }} <br>
+      <fieldset class="form-field">
+	{{ assign.assign.label }} <br>
+        {{ assign.assign(form="assign") }} <br>
+    </form>
+</div>
+
+<hr>
+
+<div class="form-wrapper">
+  <h2 class="title">Remove Roles From User</h2>
+    <form id="remove" method = "POST" style="text-align:center"> 
+     {{ remove.hidden_tag() }}
+      <fieldset class="form-field">
+	{{ remove.user.label }} <br>
+        {{ remove.user(form="remove") }} <br>
+      <fieldset class="form-field">
+	{{ remove.rem_roles.label }} <br>
+	{{ remove.rem_roles(form="remove") }} <br>
+      <fieldset class="form-field">
+	{{ remove.remove.label }} <br>
+        {{ remove.remove(form="remove") }} <br>
+    </form>
+</div>
+
+{% endblock %}

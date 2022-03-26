@@ -19,12 +19,6 @@ def login():
     form = LoginForm()
     return render_template('security/login_user.html', form=form)
 
-@home.route("/admin")
-@login_required
-@permission_required('admin')
-def admin():
-    return render_template("admin.html")
-
 @home.route("/testpage")
 @login_required
 def testpage():
@@ -63,4 +57,3 @@ def uploadpage():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for('download_file', name=filename))
     return render_template('upload.html')
- 
