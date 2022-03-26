@@ -1,14 +1,24 @@
-from flask import render_template, Response, redirect, session, request, flash, url_for, current_app
+import datetime
+from flask import render_template, Response, redirect, session, request, flash, url_for, current_app, send_file
 from app.auth.forms import LoginForm
 from app.auth.permission_required import permission_required
 from app.models import login_required
 from app.models import Job
 import csv
 import os
+from flask_wtf import FlaskForm
+from flask_wtf.file import FileField
+from werkzeug.utils import secure_filename
+from csv import DictWriter
+from flask import send_file, send_from_directory, safe_join, abort
+import pandas
 
 
 #Import blueprint
 from app.home import home
+
+ALLOWED_EXTENSIONS = {'csv'}
+
 
 @home.route('/')
 def index():
@@ -40,20 +50,46 @@ def jobpage():
     current_app.logger.error('Job list is ' + str(len(joblist)))
     return render_template("jobpage.html", joblist=joblist)
 
-@home.route("/upload")
-def uploadpage():
-    UPLOAD_FOLDER = 'c:/user/19786/desktop/piplineui/code/app/static'
-    ALLOWED_EXTENSIONS = {'txt', 'csv'}
+
+class UploadForm(FlaskForm):
+    file = FileField()
+    
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+
+@home.route('/download')
+def download():
+    todayDate = str(datetime.datetime.now().date())
+    newFileName = 'job_' + todayDate + '.csv'
+    return send_file('../test.csv', attachment_filename=newFileName, as_attachment=True)
+    
+
+
+@home.route('/upload', methods=['GET', 'POST'])
+def upload():
+    form = UploadForm()
     if request.method == 'POST':
-        if 'file' not in request.files:
-            flash('No file part')
-            return render_template(upload.html)
         file = request.files['file']
+        if 'file' not in request.files:
+            return render_template('fail.html')
         if file.filename == '':
-            flash('No selected file')
-            return render_template(upload.html)
+            return render_template('fail.html')
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('download_file', name=filename))
-    return render_template('upload.html')
+            filename = secure_filename('test.csv')
+            form.file.data.save(filename)
+            row = ['Result1', 'Result2','Result3','Result4','Result5','Result6']
+            with open (filename,'w') as csvFile:
+                writer = csv.writer(csvFile)
+                csvFile.write("\n")
+                writer.writerow(row)
+            csvFile.close()
+            return render_template('download.html')
+
+        if not allowed_file(file.name):
+            return redirect(url_for('home.fail'))
+
+    return render_template('upload.html', form=form)
