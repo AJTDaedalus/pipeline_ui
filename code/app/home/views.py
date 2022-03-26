@@ -33,8 +33,8 @@ def page_not_found(e):
     session['redirected_from'] = request.url
     return redirect(url_for("home.lacking_permission"))
 
-@login_required
 @home.route("/job")
+@login_required
 def jobpage():
     joblist=Job.query.all()
     current_app.logger.error('Job list is ' + str(len(joblist)))
