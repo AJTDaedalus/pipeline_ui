@@ -88,7 +88,7 @@ class User(UserMixin, db.Model):
         """Verify that the provided token is for this user's id."""
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
-            email = s.loads(token, salt='email-confirm', max_age=60)
+            email = s.loads(token, salt='email-confirm', max_age=600)
         except (BadSignature, SignatureExpired):
             return False
         
