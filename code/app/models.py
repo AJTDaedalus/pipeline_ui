@@ -1,10 +1,11 @@
 '''
-BIOT670 Initial database module for pipeline UI
-taken from https://github.com/hack4impact/flask-base/blob/master/app/models/user.py
-
+<<<<<<< HEAD
+10Feb22 BIOT670 Initial database module for pipeline UI
+some code adapted from hack4impact/flask-base/blob/master/app/models/user.py
 '''
 
-from flask import Flask, flash, redirect, url_for, request, render_template, Response, current_app
+from flask import Flask, flash, redirect, url_for, request, render_template, \
+                  Response, current_app
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, AnonymousUserMixin
 from flask_login import LoginManager, current_user, login_required, login_user
@@ -17,7 +18,6 @@ from sqlalchemy.orm import relationship
 
 
 db = SQLAlchemy()
-
 
 user_role = db.Table('user_role', db.Model.metadata,
     db.Column('user_id', db.Integer, ForeignKey('users.id')),
@@ -35,10 +35,8 @@ class User(UserMixin, db.Model):
     last_name = db.Column(db.String(64), index=True)
     email = db.Column(db.String(64), index=True, unique=True)
     password_hash = db.Column(db.String(128))
-    roles = db.relationship(
-        "Role",
-        secondary=user_role,
-        )
+    roles = db.relationship("Role", secondary=user_role,
+                            back_populates="users")
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -49,6 +47,26 @@ class User(UserMixin, db.Model):
     def can(self, permission):
         if any(r for r in current_user.roles if r.name==permission):
            return True
+
+    def assign_role(self, role):
+        if self not in User.query.filter(User.roles.any(name=role)).all():
+            assignment = Role.query.filter(Role.name == role).first()
+            self.roles.append(assignment)
+            db.session.add(self)
+            db.session.commit()
+            flash('Role {} granted successfully.'.format(role),'success')
+        else:
+            flash('Role {} already granted.'.format(role), 'error')
+
+    def remove_role(self, role):
+        if self not in User.query.filter(User.roles.any(name=role)).all():
+            flash('User does not have role {}.'.format(role),'error')
+        else:
+            removal = Role.query.filter(Role.name == role).first()
+            self.roles.remove(removal)
+            db.session.add(self)
+            db.session.commit()
+            flash('Role {} removed.'.format(role), 'success')
 
     @property
     def password(self):
@@ -104,37 +122,26 @@ class User(UserMixin, db.Model):
         return '<User \'%s\'>' % self.full_name()
 
 class Role(db.Model):
+    """
+    Role class defining access roles.
+    """
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
-    index = db.Column(db.String(64))
-    default = db.Column(db.Boolean, default=False, index=True)
-
-    @staticmethod
-    def insert_roles():
-        roles = {
-            'Placeholder1': ('placeholder1', False),
-            'Placeholder2': ('placeholder2', False),
-            'Administrator': (
-                'admin',
-                False
-            )
-        }
-        for r in roles:
-            role = Role.query.filter_by(name=r).first()
-            if role is None:
-                role = Role(name=r)
-            role.index = roles[r][0]
-            role.default = roles[r][1]
-            db.session.add(role)
-        db.session.commit()
+    users = relationship("User", secondary=user_role, back_populates="roles")
 
     def __repr__(self):
         return '<Role \'%s\'>' % self.name
 
+    def create_role(role):
+        db_role = Role.query.filter_by(name=role).first()
+        if db_role:
+            flash('Role already exists','error')
+        else:
+            new_role = Role(name=role)
+            db.session.add(new_role)
+            db.session.commit()
 
-login_manager = LoginManager()
-login_manager.login_view = 'login'
 
 class AnonymousUser(AnonymousUserMixin):
     def can(self, _):
@@ -142,7 +149,8 @@ class AnonymousUser(AnonymousUserMixin):
     def confirmed(self):
         return False
 
-
+login_manager = LoginManager()
+login_manager.login_view = 'login'
 login_manager.anonymous_user = AnonymousUser
 
 @login_manager.user_loader
@@ -156,20 +164,34 @@ def unauthorized():
     redirect(url_for('auth.login'))
     )
 
-# The home page should have 5 tabs, each capable of performing some type of request handling
-# the data for each tab will be stored in the RequestDetails tables
-
 class RequestDetails(db.Model):
+    """
+    RequestDetails table for information regarding requests.
+    """
     Id = db.Column(db.Integer, primary_key=True)
     requestData = db.Column(db.CHAR(None), unique=False, nullable=True)
     status = db.Column(db.String(20), unique=False, nullable=True)
     createDate = db.Column(db.DateTime, unique=False, nullable=False)
     userId = db.Column(db.Integer, unique=False, nullable=False)
+    Output = db.Column(db.Text, unique=False, nullable=False)
     errorMessage = db.Column(db.String(100), unique=False, nullable=False)
+    priority = db.Column(db.Integer)
 
-    def __init__(self, requestData, status, createDate, userId, errorMessage):
+    def __init__(self, requestData, status, createDate, userId, Output, errorMessage):
         self.requestData = requestData
         self.status = status
         self.createDate = createDate
         self.userId = userId
+        self.Output = Output
         self.errorMessage = errorMessage
+
+class Job(db.Model):
+    JobID = db.Column(db.Integer, primary_key=True)
+    JobName = db.Column(db.String(255), unique=True, nullable=False)
+    DateSubmit = db.Column(db.DateTime, unique=False, nullable=False)
+    DateStart = db.Column(db.DateTime, unique=False, nullable=True)
+    DateEnd = db.Column(db.DateTime, unique=False, nullable=True)
+    Status = db.Column(db.String(255), unique=False, nullable=False)
+    UserID = db.Column(db.Integer, ForeignKey("users.id", ondelete="CASCADE"))
+
+    user = relationship('User', foreign_keys='Job.UserID')

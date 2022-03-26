@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Job Page{% endblock %}
+{% block page_content %}
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Job ID</th>
+      <th scope="col">Job Name</th>
+      <th scope="col">Date Submitted</th>
+      <th scope="col">Start Date</th>
+      <th scope="col">End Date</th>
+      <th scope="col">Job Status</th>
+      <th scope="col">User</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for job in joblist %}
+    {% if job.Status=="Pending" %}
+    <tr class="table-primary">
+    {% elif job.Status=="Running" %}
+    <tr class="table-warning">
+    {% elif job.Status=="Complete" %}
+    <tr class="table-success">
+    {% elif job.Status=="Fail" %}
+    <tr class="table-danger">
+    {% else %}
+    <tr>
+    {% endif %}
+      <th scope="row">{{job.JobID}}</th>
+      <td>{{job.JobName}}</td>
+      <td>{{job.DateSubmit}}</td>
+      <td>{{job.DateStart}}</td>
+      <td>{{job.DateEnd}}</td>
+      <td>{{job.Status}}</td>
+      <td>{{job.user.email}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
