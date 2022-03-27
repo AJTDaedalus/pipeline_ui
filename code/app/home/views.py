@@ -1,5 +1,6 @@
 import datetime
-from flask import render_template, Response, redirect, session, request, flash, url_for, current_app, send_file
+from flask import render_template, Response, redirect, session, request, \
+                  flash, url_for, current_app, send_file
 from app.auth.forms import LoginForm
 from app.auth.permission_required import permission_required
 from app.models import login_required
@@ -34,6 +35,11 @@ def login():
 def testpage():
     return render_template("testpage.html")
 
+@home.route("/account_confirmed")
+@login_required
+def account_confirmed():
+    return render_template("security/account_confirmed.html")
+
 @home.route("/permission_denied")
 def lacking_permission():
     return render_template("permission_denied.html")
@@ -43,8 +49,8 @@ def page_not_found(e):
     session['redirected_from'] = request.url
     return redirect(url_for("home.lacking_permission"))
 
-@login_required
 @home.route("/job")
+@login_required
 def jobpage():
     joblist=Job.query.all()
     current_app.logger.error('Job list is ' + str(len(joblist)))
@@ -53,7 +59,7 @@ def jobpage():
 
 class UploadForm(FlaskForm):
     file = FileField()
-    
+
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -65,8 +71,9 @@ def allowed_file(filename):
 def download():
     todayDate = str(datetime.datetime.now().date())
     newFileName = 'job_' + todayDate + '.csv'
-    return send_file('../test.csv', attachment_filename=newFileName, as_attachment=True)
-    
+    return send_file('../test.csv', attachment_filename=newFileName,
+                     as_attachment=True)
+
 @home.route('/fail')
 def fail():
    return render_template("fail.html")
