@@ -12,3 +12,4 @@ email-validator==1.1.3
 Flask-Mail==0.9.1
 WTForms-SQLAlchemy==0.3
 jinja2==3.0.3
+pandas==1.4.1
