@@ -2,12 +2,14 @@
 {% block title %}Calculate GC Content Page{% endblock %}
 {% block page_content %}
     <br>
-<p style="text-align:left">Enter the DNA sequence below to calculate its percentage GC content.</p>
+<p style="text-align:left">Enter the DNA sequence below to calculate percentage GC content.</p>
         <div class="container">
         <div class="row">
             <div class="col-md-7">
+                <form method="POST" action="/gccontent">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                     <div class="form-floating">
-                        <textarea name="data" class="form-control" id="floatingTextarea2" style="height: 100px"></textarea>
+                        <textarea name="data" placeholder="Enter DNA sequence here" class="form-control" id="floatingTextarea2" style="height: 100px"></textarea>
                         <br>
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
@@ -16,7 +18,8 @@
             <div class="card col-sm-3 offset-1" style="width: auto;">
                 <div class="card-body">
                     <h5 class="card-title">Result</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">%GC content</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">% GC Content is {{final_Result}}</h6>
+
                 </div>
             </div>
 
