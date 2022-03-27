@@ -79,6 +79,36 @@ def fail():
    return render_template("fail.html")
 
 
+## Use Get and POST method to get user input and send the result
+@home.route("/gccontent", methods=["GET", "POST"])
+def gccontent():
+    ### store the user input in variables to calculate GC content
+    if request.method == "POST":
+        data = request.form.get("data").upper()
+        G = data.count("G")
+        C = data.count("C")
+        GC = G + C
+        A = data.count("A")
+        T = data.count("T")
+        total = G + C + A + T
+        result = round((GC / total * 100), 2)
+
+        ### create session to store the result
+        session["final_result"] = result
+
+        print(result)
+
+
+        return redirect("/gccontent")
+    else:
+        ## create session to store the result
+        finalResult = session.get("final_result")
+        print(finalResult,'sarfraz')
+        ## Release session and clear session data
+        session.pop("final_result", None)
+        return render_template("gccontent.html", final_Result=finalResult)
+
+
 @home.route('/upload', methods=['GET', 'POST'])
 def upload():
     form = UploadForm()
@@ -97,9 +127,7 @@ def upload():
                 csvFile.write("\n")
                 writer.writerow(row)
             csvFile.close()
-            #return render_template('download.html')
             data = pandas.read_csv(filename, header=0, on_bad_lines='skip')
-            print(data)
             return redirect(url_for('home.download'))
 
         if not allowed_file(file.name):
