@@ -66,7 +66,7 @@
 
 	        {% if current_user.can('admin') %}
 	          <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('auth.admin')}}">Admin</a>
+                    <a class="nav-link" href="{{url_for('admin.admin')}}">Admin</a>
                   </li>
                 {% endif %}
 
