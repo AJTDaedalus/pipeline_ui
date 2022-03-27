@@ -25,6 +25,11 @@ def login():
 def testpage():
     return render_template("testpage.html")
 
+@home.route("/account_confirmed")
+@login_required
+def account_confirmed():
+    return render_template("security/account_confirmed.html")
+
 @home.route("/permission_denied")
 def lacking_permission():
     return render_template("permission_denied.html")
@@ -34,8 +39,8 @@ def page_not_found(e):
     session['redirected_from'] = request.url
     return redirect(url_for("home.lacking_permission"))
 
-@login_required
 @home.route("/job")
+@login_required
 def jobpage():
     joblist=Job.query.all()
     current_app.logger.error('Job list is ' + str(len(joblist)))

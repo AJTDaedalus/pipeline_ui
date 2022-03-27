@@ -9,8 +9,8 @@ from flask import Flask, flash, redirect, url_for, request, render_template, \
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, AnonymousUserMixin
 from flask_login import LoginManager, current_user, login_required, login_user
-#from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-#from itsdangerous import BadSignature, SignatureExpired
+from itsdangerous import URLSafeTimedSerializer as Serializer
+from itsdangerous import BadSignature, SignatureExpired
 from werkzeug.security import check_password_hash, generate_password_hash
 from sqlalchemy import Table, ForeignKey, Column, Integer
 from sqlalchemy.orm import relationship
@@ -26,7 +26,7 @@ user_role = db.Table('user_role', db.Model.metadata,
 
 class User(UserMixin, db.Model):
     """
-    User class. Your Typical user class.
+    User class. Access to UI restricted by 'roles' and 'confirmed'.
     """
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -79,6 +79,45 @@ class User(UserMixin, db.Model):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def generate_confirmation_token(self, expiration=30800):
+        """Generate a confirmation token to email a new user."""
+        s = Serializer(current_app.config['SECRET_KEY'], salt='email-confirm')
+        return s.dumps(self.id)
+
+    def confirm_account(self, token):
+        """Verify that the provided token is for this user's id."""
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            email = s.loads(token, salt='email-confirm', max_age=600)
+        except (BadSignature, SignatureExpired):
+            return False
+
+        self.confirmed = True
+        db.session.add(self)
+        db.session.commit()
+        return True
+
+    def generate_password_reset_token(self, expiration=3600):
+        """
+        Generate a password reset change token to email to an existing user.
+        """
+        s = Serializer(current_app.config['SECRET_KEY'], salt='pass-reset')
+        return s.dumps({'reset': self.id})
+
+    def reset_password(self, token, new_password):
+        """Verify the new password for this user."""
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token, salt='pass-reset')
+        except (BadSignature, SignatureExpired):
+            return False
+        if data.get('reset') != self.id:
+            return False
+        self.password = new_password
+        db.session.add(self)
+        db.session.commit()
+        return True
+
     def __repr__(self):
         return '<User \'%s\'>' % self.full_name()
 
@@ -107,6 +146,8 @@ class Role(db.Model):
 class AnonymousUser(AnonymousUserMixin):
     def can(self, _):
         return False
+    def confirmed(self):
+        return False
 
 login_manager = LoginManager()
 login_manager.login_view = 'login'
@@ -120,8 +161,7 @@ def load_user(user_id):
 @login_manager.unauthorized_handler
 def unauthorized():
     return(
-    Response("You must be logged in to view that page."),
-    401,
+    redirect(url_for('auth.login'))
     )
 
 class RequestDetails(db.Model):
