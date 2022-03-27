@@ -2,7 +2,7 @@ import datetime
 from flask import render_template, Response, redirect, session, request, \
                   flash, url_for, current_app, send_file
 from app.auth.forms import LoginForm
-from app.auth.permission_required import permission_required
+from app.static.permission_required import permission_required
 from app.models import login_required
 from app.models import Job
 import csv

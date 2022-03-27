@@ -30,8 +30,10 @@ def create_app(settings=settings):
 
     from app.home import home as home_bp
     from app.auth import auth as auth_bp
+    from app.admin import admin as admin_bp
     app.register_blueprint(home_bp)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(admin_bp)
 
     #Email
     app.config['MAIL_SERVER'] = 'smtp.gmail.com'
