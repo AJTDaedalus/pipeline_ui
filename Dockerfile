@@ -1,4 +1,4 @@
-FROM python:3.7.2-stretch
+FROM python:3.9
 
 ENV LISTEN_PORT=5000
 EXPOSE 5000
