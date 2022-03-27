@@ -1,4 +1,5 @@
-from flask import render_template, Response, redirect, session, request, flash, url_for, current_app, send_file
+from flask import render_template, Response, redirect, session, request, \
+                  flash, url_for, current_app, send_file
 from app.auth.forms import LoginForm
 from app.auth.permission_required import permission_required
 from app.models import login_required
@@ -13,14 +14,11 @@ from flask import send_file, send_from_directory, safe_join, abort
 import pandas
 
 
-
-
 #Import blueprint
 from app.home import home
 
 
 ALLOWED_EXTENSIONS = {'csv'}
-
 
 
 @home.route('/')
@@ -32,6 +30,10 @@ def login():
     form = LoginForm()
     return render_template('security/login_user.html', form=form)
 
+@home.route("/account_confirmed")
+@login_required
+def account_confirmed():
+    return render_template("security/account_confirmed.html")
 
 @home.route("/permission_denied")
 def lacking_permission():
@@ -42,35 +44,27 @@ def page_not_found(e):
     session['redirected_from'] = request.url
     return redirect(url_for("home.lacking_permission"))
 
-@login_required
 @home.route("/job")
+@login_required
 def jobpage():
     joblist=Job.query.all()
     current_app.logger.error('Job list is ' + str(len(joblist)))
     return render_template("jobpage.html", joblist=joblist)
 
-    
 @home.route("/fail")
 def fail():
     return render_template("fail.html")
 
-
 class UploadForm(FlaskForm):
     file = FileField()
-    
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
-
 @home.route('/download')
 def download():
     return send_file('Testfile.csv', as_attachment=True)
-    
-
-
 
 @home.route('/upload', methods=['GET', 'POST'])
 def upload():
@@ -90,8 +84,8 @@ def upload():
                 csvFile.write("\n")
                 writer.writerow(row)
             csvFile.close()
-            data = pandas.read_csv(filename, header=0, on_bad_lines='skip') 
-            myData = data.values 
+            data = pandas.read_csv(filename, header=0, on_bad_lines='skip')
+            myData = data.values
             return render_template('download.html')
 
         if not allowed_file(file.name):
