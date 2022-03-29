@@ -12,7 +12,6 @@ basedir = os.path.abspath(os.path.dirname(__name__))
 
 #Create superclass
 class Config(object):
-    SECRET_KEY = os.environ.get('SECRET_KEY')
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
@@ -22,8 +21,6 @@ class DevelopmentSettings(Config):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///'+os.path.join(basedir, 'dev-data.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SECRET_KEY = 'Thisismykeyitisverysecret'
-    SECURITY_PASSWORD_SALT = 'TEMPORARYSALTYSALT'
-    #SERVER_NAME = '10.0.0.135:8000'
 
 class ProductionSettings(Config):
     DEBUG = False
