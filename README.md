@@ -75,9 +75,35 @@ This project is in support of their growing bioinformatics infrastructure that s
 - Python 3.7 environment
 - Docker-Compose
 
-#### Deployment Settings:
-- Change secret key/password
-
+#### Deployment Instructions:
+*	Recommendation – Select second server for development
+*	Ensure dependencies listed above are installed
+*	Install Docker in a Python virtual environment
+*	Update security features
+  * Update “SECRET_KEY” setting as seen in the figure below, to password-like string, preferably randomly generated. https://github.com/AJTDaedalus/pipeline_ui/blob/35602509132c5f50a332ec8ef76a852f45f2ab20/code/settings.py#L12-L23
+  * Update “Mail_Server” and “Mail_UserName” in `code/app/__init__.py` as seen in the image below:
+    <p align="left">
+    <img src="https://user-images.githubusercontent.com/98370207/161188349-fdd6a058-bc85-4e40-b3a6-547f45204137.png" width="325" height="350")
+    </p> 
+  * Update `docker-compose file` to change the following settings: 
+    “MYSQL_ROOT_PASSWORD”, “MYSQL_USER”, and “MYSQL_PASSWORD”
+    * Also update “SQLALCHEMY_DATABASE_URI” in `code/settings.py` to match the “MYSQL_USER”, and “MYSQL_PASSWORD” settings to what was used above.
+       <p align="left">
+       <img src="https://user-images.githubusercontent.com/98370207/161189730-2641341e-7ed6-4e15-860c-53c57dc12cf6.png" width="600" height="100")
+       </p>
+* Once this is completed, move to the parent folder of the repository where the `docker-compose.yml` file is located and run
+  <br />
+  the `docker-compose up` command
+* Once server is up the IPv4 address can be modified  in the proxy/conf file in the repository  
+* Next, Update the administrator in Admin page
+  * Register for a new account and make sure to receive email confirmation
+  * Log in to the admin page using username “me123@gmail.com” and password “12345678” 
+  * Once logged in go to the Admin page and assign admin roles to the newly created admin email account
+  * Confirm the new admin user can access the Admin page
+  * Remove admin privileges from the “me123@gmail.com” user
+* For development only
+  * Start up development server using `python main.py` command
+        
 #### Docker Compose Commands:
 - `server up`
 - `server down`
