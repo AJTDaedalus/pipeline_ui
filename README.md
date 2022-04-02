@@ -89,7 +89,7 @@ This project is in support of their growing bioinformatics infrastructure that s
     “MYSQL_ROOT_PASSWORD”, “MYSQL_USER”, and “MYSQL_PASSWORD”
     * Also update “SQLALCHEMY_DATABASE_URI” in `code/settings.py` to match the “MYSQL_USER”, and “MYSQL_PASSWORD” settings to what was used above.
        <p align="left">
-       <img src="https://user-images.githubusercontent.com/98370207/161189730-2641341e-7ed6-4e15-860c-53c57dc12cf6.png" width="600" height="100")
+       <img src="https://user-images.githubusercontent.com/98370207/161189730-2641341e-7ed6-4e15-860c-53c57dc12cf6.png" width="600" height="100">
        </p>
 * Once this is completed, move to the parent folder of the repository where the `docker-compose.yml` file is located and run
   <br />
@@ -104,11 +104,35 @@ This project is in support of their growing bioinformatics infrastructure that s
 * For development only
   * Start up development server using `python main.py` command
         
-#### Docker Compose Commands:
-- `server up`
-- `server down`
-- `up --build` (rebuild with changes)
+#### Creating and Testing New Interfaces
+* Determine appropriate blueprint to use. NOTE do not use Auth blueprint unless the goal is to allow unconfirmed users without them being re-routed to the “unconfirmed” page.
+* Create folder in “app” folder named <Blueprint>
+* Create a simple __init__.py file inside newly created folder
+* Initialize the new blueprint in the application factory in ` app\__init__.py`
+* New blueprints require a `views.py` file
+* If the new interface requires the use of Flask-Forms to gather user-submitted information, it is best practice to define those forms in a `forms.py` file inside the associated Blueprint folder
+* If new page is being added, add the new routes and necessary forms to that blueprint’s `views.py` and `forms.py` files, respectively
+* Note: To add restrictions such as login and permissions requirements, use decorators `@login_required` and `@permission_required(<role>)` above the definition of the route
+* Example of Admin Route
+  <p align="left">
+  <img src="https://user-images.githubusercontent.com/98370207/161361899-43739b7e-96be-42da-940a-f0ffc597795e.png" width="600" height="100">
+  </p>
+* Next, create the html template and render the template at the bottom of the route created in the `views.py` file using the `render_template` function as seen below.
+  <p align="left">
+  <img src="https://user-images.githubusercontent.com/98370207/161362138-067eca5d-6bee-4837-9d94-53421876ffb2.png" width="600" height="100">
+  </p>
+* The new template should extend the base.html
+  * Add link to the navigation bar in the `templates\base.html` as seen below
+    <p align="left">
+     <img src="https://user-images.githubusercontent.com/98370207/161362231-092966b9-7141-42fe-bf9a-7266557b6d81.png" width="600" height="100">
+    </p>
+  * Per the example above, the `can` function only allows the Admin page to show the user with admin privileges
+  * Other restrictions that can be used are: 
+    </b>
+    User is logged in: (`if current_user.is_authenticated`) or not logged-in (`if current_user.is_anonymous`)
+* For testing purposes, it is advisable to use the development server by using `python main.py`. This provides more informative error messages when there is a problem   with the newly introduced code
 
+  
 #### Customization
  ##### Adding new pages/functions:
   - Copying and editing blueprints
