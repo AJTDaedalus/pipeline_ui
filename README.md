@@ -75,13 +75,16 @@ This project is in support of their growing bioinformatics infrastructure that s
 - Python 3.7 environment
 - Docker-Compose
 
-### Requirements
+#### Requirements
 ```
 pip install -r requirements.txt
 ```
 
-#### Deployment Instructions:
-*	Recommendation – Select second server for development
+### Deployment Instructions:
+*	Host Preparations
+    *	Ensure docker is installed on the host computer
+    *	Create a python 3.7 environment with venv, conda, or your favorite python environment tool
+    *	Install docker-compose on the python environment.
 *	Ensure dependencies listed above are installed
 *	Install Docker in a Python virtual environment
 *	Update security features
@@ -172,17 +175,70 @@ pip install -r requirements.txt
   * If the changes are showing in the table information, your migration was successful.
   * You can restart the web app using `docker-compose down` followed by `docker-compose up`
 
-#### Customization
- ##### Adding new pages/functions:
-  - Copying and editing blueprints
-  - Adding to Navbar
-  - Adding access roles
-  - Adding new models
-  - Initializing blueprint in factory
+### Customization
+ #### Adding new pages/functions:
+ *  Adding to Navbar
+    * To add new pages, create an html template page and a route for that template in the `views.py` file.
+    * In `views.py file`:
+      * Create the route and name of the new page: @home.route(‘/newpage’)
+      * Define a function to render: 
+        ```
+        template def newpage ():
+        Return renter_template(“nameofnewpage.html’)
+        ```
+      * If login parameters needed, add decorator to line below route: `@login_required`
+    * In `templates` folder:
+      * Create template by opening up a new page in any text editor and saving as an html file
+      * Keep formatting consistent by adding code to beginning of template file: `{% extends 'base.html' %}` and this code at the very end of the file: `{% endblock           %}`
+    * In base.html file in templates folder:
+      * Add link to navbar by using the class nav-link within the navigation bar code, and calling the url for the template just created using the following code:
+          ```
+          <li class="nav-item active">
+          <a class ="nav-link" href="{{url_for('home.nameofnewpage')}}">nameofnewpage</a>
+          </li>
+          ```
+      * If page is only intended for authenticated users use this code above:
+          ```
+          {% if current_user.is_authenticated %}
+          ```
+      * If page is intended for anonymous users use this code above: 
+        ```
+        {% if current_user.is_anonymous %}
+        ```
+  #### Adding design elements/changing style and color in css:
+  * Navigate to the `code>app>static>css` folder
+	* Open the existing css file titled `format.css` or create a new css file
+	* Use CSS to adjust formatting and save
+  * If creating a new CSS file, save in CSS folder within static folder, and refer to this new file in the Base.html template inside of the following code:
+    ```
+    <link rel="stylesheet" href='/static/css/newcssfile.css'/>
+    ```
+  #### Changing logo/adding images above nav bar\
+  * Save image in the `code>app>static>` folder as a standalone file
+  * Navigate to the base.html template
+  * Add the file path to the image location in the code:
+    ```
+    <image src="{{url_for('static',filename = 'newlogo.png')}}" width = "150" height = "150" text-align:center></image>
+    ```
+  * This positions the image to be above the navigation bar, but    to adjust the placement of the logo image, place the line of code before or after the navigation       bar.
+  #### Adding new model
+  * Go to the code/app folder and click on the models.py file
+  * Define the class name and use `db.Model` to declare that this is a model
+  * If table name needs to be overridden use the` _tablename_` class   attribute
+  * Define columns and specify column type (i.e. Integer, String, DateTime, etc)
+  * Specify primary, foreign keys and relationships.
+    <p align="left">
+    <img src="https://user-images.githubusercontent.com/98370207/161365636-6b232255-681c-4995-8f13-d8e2a95dc053.png" width="500" height="200">
+    </p>
 
 <!-- USAGE EXAMPLES -->
 ## Usage
-TBD - info will be added showing how each page can be used
+####  Examples of functionality
+* Admin page that can assign user roles
+* Login verification after registration and passwword reset
+* File Input and modification
+* Job status display
+* DNA sequence input and calculation of GC content
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
