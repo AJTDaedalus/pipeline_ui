@@ -75,6 +75,11 @@ This project is in support of their growing bioinformatics infrastructure that s
 - Python 3.7 environment
 - Docker-Compose
 
+### Requirements
+```
+pip install -r requirements.txt
+```
+
 #### Deployment Instructions:
 *	Recommendation – Select second server for development
 *	Ensure dependencies listed above are installed
@@ -131,8 +136,42 @@ This project is in support of their growing bioinformatics infrastructure that s
     </b>
     User is logged in: (`if current_user.is_authenticated`) or not logged-in (`if current_user.is_anonymous`)
 * For testing purposes, it is advisable to use the development server by using `python main.py`. This provides more informative error messages when there is a problem   with the newly introduced code
-
   
+####  Deploying Changes
+* Once changes have been tested and approved for production, push the updates to the local git repository
+* Fetch the updates to the production server and once the changes are pulled to the development server use the ` docker-compose down` command to spin down the web       application
+* Re-deploy the updates to the web application using `docker-compose up –build`
+  
+#### Database Updates
+* Changes to the database will require migration
+   *  #### Migration instructions
+      * For initial database changes, generate migrations folder in the repository’s code folder using ` flask db init`
+        * This requires the Python environment to have the `requirements.txt` file installed
+      * Folder can be re-used for subsequent changes; it is only necessary for the first change. The folder will be needed in both development and production servers.
+      * After changes are made in the development of server or pulled in on the production server run `flask db migrate -m ‘comment explaining changes’` in the code           folder
+        * A message should be displayed that migration file was successfully created
+   *  #### Testing Migration
+      * Run `flask db upgrade` to test migration prior to pushing to production database
+      * Check for a success message and check development database to ensure that changes were successfully deployed 
+  
+* Deploy database changes to production
+  * Use `docker-compose stop` to stop production server
+  * Use ` docker-compose build` to build the production server with new code and new migration file
+  * Use `docker-compose up -d` to run containers in the background
+  * Use `sudo docker-compose run --rm app bash` to bash into the app container
+  * Define the application using `export FLASK_APP=main.py`
+  * Complete migration using `flask db upgrade`
+  * Exit the container’s bash shell  with `"exit"`
+
+####  Testing Deployment
+* To test that the changes were properly deployed before spinning the server back up, follow the steps below:
+  * Use `sudo docker-compose run --rm db bash` to bash into the db container 
+  * Login to the mysql server using `mysql -u pipeline -p pipeline_ui` followed by password `pipeline123` on prompt.  
+  * Replace the mysql username and password with the secure selections made when updating the settings.py file.
+  * When inside the mysql instance, run `describe [table with changes];`.  If you have trouble identifying the table, the command `show tables;` will provide a list.
+  * If the changes are showing in the table information, your migration was successful.
+  * You can restart the web app using `docker-compose down` followed by `docker-compose up`
+
 #### Customization
  ##### Adding new pages/functions:
   - Copying and editing blueprints
@@ -140,18 +179,6 @@ This project is in support of their growing bioinformatics infrastructure that s
   - Adding access roles
   - Adding new models
   - Initializing blueprint in factory
-
-#### Deploying changes to production:
-  - Flask migrate explanation
-  - `docker compose up --build` reminder
-  
-### Requirements
-```
-pip install -r Requirements.txt
-```
-
-### Installation
-TBD - installation instructions to be added later
 
 <!-- USAGE EXAMPLES -->
 ## Usage
