@@ -175,7 +175,7 @@ class RequestDetails(db.Model):
     userId = db.Column(db.Integer, unique=False, nullable=False)
     Output = db.Column(db.Text, unique=False, nullable=False)
     errorMessage = db.Column(db.String(100), unique=False, nullable=False)
-    priority = db.Column(db.Integer)
+    #priority = db.Column(db.Integer)
 
     def __init__(self, requestData, status, createDate, userId, Output, errorMessage):
         self.requestData = requestData
