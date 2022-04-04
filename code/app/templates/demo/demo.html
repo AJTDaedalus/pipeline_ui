@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Demo Page{% endblock %}
+{% block page_content %}
+
+<div class="form-wrapper">
+  <h2 class="title">Enter Demo Message</h2>
+    <form action = "" method = "POST" style="text-align:center"> 
+     {{ demoform.hidden_tag() }}
+      <fieldset class="form-field">
+	{{ demoform.name.label }} <br>
+        {{ demoform.name }} <br>
+      <fieldset class="form-field">
+        {{ demoform.submit }} <br>
+    </form>
+</div>
+
+{% if demoform.errors %}
+{{ demoform.errors }}
+{% endif %}
+
+{% endblock %}
