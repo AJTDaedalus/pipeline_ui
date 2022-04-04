@@ -31,9 +31,11 @@ def create_app(settings=settings):
     from app.home import home as home_bp
     from app.auth import auth as auth_bp
     from app.admin import admin as admin_bp
+    #from app.demo import demo as demo_bp
     app.register_blueprint(home_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(admin_bp)
+    #app.register_blueprint(demo_bp)
 
     #Email
     app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -52,16 +54,13 @@ def create_app(settings=settings):
 
     with app.app_context():
         db.create_all()
-        #Test code below, please remove before production launch
+        #Creates default admin account upon first spinup
         if not db.session.query(User).first():
             test_user = User(email='me123@gmail.com',
                              first_name='Me', last_name='MEME',
                              password="12345678",
                              confirmed=True)
-            #test_role = Role(name='test')
             test_user.roles.append(Role(name='admin'))
-            test_user.roles.append(Role(name='Placeholder1'))
-            print (test_user.roles)
             db.session.add(test_user)
             db.session.commit()
 
